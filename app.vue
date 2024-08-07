@@ -16,6 +16,8 @@
     <AppMenu class="w-full max-w-[320px] border-r border-gray-200 dark:border-gray-800" />
   
     <NuxtPage />
+
+    <UNotifications />
   </div>
 </template>
 

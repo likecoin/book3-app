@@ -86,32 +86,47 @@ const { connectors, connect } = useConnect();
 const { disconnect } = useDisconnect();
 const account = useAccount();
 const userStore = useUserStore();
+const toast = useToast()
+
+function handleAuthError({
+  error,
+  title = "An error occurred.",
+}: {
+  error: Error;
+  title?: string;
+}) {
+  console.error(error);
+  disconnect();
+  toast.add({
+    title,
+    color: 'red',
+    description: error?.toString(),
+    icon: 'i-heroicons-exclamation-triangle',
+    timeout: 0,
+  });
+}
 
 const { signMessage } = useSignMessage({
   mutation: {
     onError: (error) => {
-      console.error(error);
-      disconnect();
+      handleAuthError({ error, title: "Failed to sign message." });
     },
     onSuccess: async (signature, { message }) => {
       if (!signature) {
-        console.error("Failed to sign message.");
-        disconnect();
+        handleAuthError({ error: new Error("Failed to sign message.") });
         return;
       }
 
       const address = account.address?.value;
       if (!address) {
-        console.error("Failed to fetch address.");
-        disconnect();
+        handleAuthError({ error: new Error("Failed to fetch address.") });
         return;
       }
 
       try {
         await userStore.login({ address, signature, message });
       } catch (error) {
-        console.error(error);
-        disconnect();
+        handleAuthError({ error: error as Error, title: "Failed to login." });
         return;
       }
     },
@@ -123,16 +138,14 @@ function handleConnect(connector: Connector) {
     { connector, chainId: chainId.value },
     {
       onError(error) {
-        console.error(error);
-        disconnect();
+        handleAuthError({ error, title: "Failed to connect." });
       },
       onSuccess: async () => {
         let nonce;
         try {
           nonce = await $fetch("/api/users/nonce");
         } catch (error) {
-          console.error(error);
-          disconnect();
+          handleAuthError({ error: error as Error, title: "Failed to fetch nonce." });
           return;
         }
         if (!nonce) {
