@@ -1,45 +1,76 @@
-import { SiweMessage } from 'siwe';
+import { verifyMessage } from '@wagmi/vue/actions';
+import { parseSiweMessage } from 'viem/siwe';
+
+import { config as wagmiConfig } from '@/wagmi';
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
   const session = await useSession(event, { password: config.sessionSecret });
   if (!session) {
-    event.respondWith(new Response('Unauthorized', { status: 401 }));
+    event.respondWith(new Response('Missing session.', { status: 401 }));
+    return;
+  }
+
+  const nonce = session.data?.nonce;
+  if (!nonce) {
+    event.respondWith(new Response('Missing nonce in session.', { status: 401 }));
+    return;
+  }
+
+  let body: {
+    address: `0x${string}`;
+    message: string;
+    signature: `0x${string}`;
+  };
+  try {
+    body = await readBody(event);
+    if (!body.address) {
+      event.respondWith(new Response('Missing address in request body.', { status: 400 }));
+      return;
+    }
+    if (!body.message) {
+      event.respondWith(new Response('Missing message in request body.', { status: 400 }));
+      return;
+    }
+    if (!body.signature) {
+      event.respondWith(new Response('Missing signature in request body.', { status: 400 }));
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+    event.respondWith(new Response('Invalid request body.', { status: 400 }));
     return;
   }
 
   try {
-    const body = await readBody(event).catch(() => {});
-    if (!body.address) {
-      event.respondWith(new Response('Missing address in request body', { status: 422 }));
-      return;
-    }
-    if (!body.message) {
-      event.respondWith(new Response('Missing message in request body', { status: 422 }));
-      return;
-    }
-    if (!body.signature) {
-      event.respondWith(new Response('Missing signature in request body', { status: 422 }));
+    const parsedMessage = parseSiweMessage(body.message);
+    if (parsedMessage.address !== body.address) {
+      event.respondWith(new Response('Address mismatch.', { status: 422 }));
       return;
     }
 
-    const siweMessage = new SiweMessage(body.message);
-    const { data: message } = await siweMessage.verify({
+    if (parsedMessage.nonce !== nonce) {
+      event.respondWith(new Response('Nonce mismatch.', { status: 422 }));
+      return;
+    }
+
+    const isValid = await verifyMessage(wagmiConfig, {
+      address: body.address,
+      message: body.message,
       signature: body.signature,
-      nonce: session.data?.nonce,
     });
 
-    if (message.address !== body.address) {
-      event.respondWith(new Response('Invalid address', { status: 422 }));
+    if (!isValid) {
+      event.respondWith(new Response('Invalid signed message for the given address.', { status: 422 }));
       return;
     }
 
-    await session.update({ siwe: message, nonce: null });
+    await session.update({ siwe: parsedMessage, nonce: null });
 
-    return { address: message.address };
-  } catch (e) {
+    return parsedMessage;
+  } catch (error) {
+    console.error(error);
     await session.clear();
-    console.error(e);
-    event.respondWith(new Response(e?.toString(), { status: 500 }));
+    event.respondWith(new Response("Unknown error.", { status: 422 }));
   }
 });
