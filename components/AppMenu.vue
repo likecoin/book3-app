@@ -3,12 +3,14 @@
     :ui="{
       base: 'flex flex-col h-full',
       rounded: 'rounded-none',
+      header: { base: 'flex items-center gap-4' },
       body: { base: 'grow' },
       footer: { base: 'space-y-2' },
     }"
   >
     <template #header>
-      <AppLogo class="w-10" />
+      <AppLogo class="w-6" />
+      <span class="font-mono font-bold">book3.app</span>
     </template>
 
     <div class="flex flex-col gap-2 grow">
@@ -16,18 +18,6 @@
     </div>
 
     <template #footer>
-      <div class="flex items-center gap-1">
-        <UBadge
-          :label="`${shortenAddress}`"
-          :ui="{ base: 'w-full', font: 'font-mono' }"
-        />
-        <UButton
-          icon="i-heroicons-clipboard-document"
-          variant="outline"
-          size="xs"
-        />
-      </div>
-
       <UButton variant="outline" size="xl" block @click="logout">
         Logout
       </UButton>
@@ -56,11 +46,6 @@ const menuLinks = [
     to: "/settings",
   },
 ];
-
-const shortenAddress = computed(() => {
-  if (!userStore.address) return "-";
-  return `${userStore.address.slice(0, 12)}...${userStore.address.slice(-8)}`;
-});
 
 async function logout() {
   try {

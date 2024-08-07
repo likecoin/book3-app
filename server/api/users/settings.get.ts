@@ -7,5 +7,5 @@ export default defineEventHandler(async (event) => {
     return;
   }
 
-  return { address: siweData.address };
+  return siweData;
 });

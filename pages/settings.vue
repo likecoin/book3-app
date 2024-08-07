@@ -6,12 +6,42 @@
       <h1 class="font-bold text-xl">Settings</h1>
     </header>
 
-    <main class="px-10 py-4">
-      <pre>{{ result?.data }}</pre>
-    </main>
+    <UContainer class="w-full py-6" as="main">
+      <UFormGroup label="Wallet Address">
+        <UInput
+          class="font-mono"
+          :model-value="userStore.address"
+          icon="i-heroicons-key"
+          size="lg"
+          :disabled="true"
+        >
+          <template #trailing>
+            <UButton
+              class="pointer-events-auto"
+              icon="i-heroicons-clipboard-document"
+              variant="ghost"
+              size="xs"
+              :disabled="!userStore.address"
+              @click="copyAddress"
+            />
+          </template>
+        </UInput>
+
+      </UFormGroup>
+    </UContainer>
   </div>
 </template>
 
 <script setup lang="ts">
-const result = await useFetch("/api/users/settings");
+const userStore = useUserStore();
+
+const toast = useToast();
+
+function copyAddress() {
+  navigator.clipboard.writeText(userStore.address);
+  toast.add({
+    id: 'copy-address',
+    title: "Copied address to clipboard"
+  });
+}
 </script>

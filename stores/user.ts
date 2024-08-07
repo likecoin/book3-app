@@ -20,7 +20,7 @@ export const useUserStore = defineStore("userStore", {
       message: SignableMessage,
       signature: `0x${string}`
     }) {
-      const data: { address: string} = await $fetch("/api/users/login", {
+      const data: { address: string } = await $fetch("/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
