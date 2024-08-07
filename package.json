@@ -1,0 +1,33 @@
+{
+  "name": "book3-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^2.17.0",
+    "@pinia/nuxt": "^0.5.3",
+    "@tanstack/vue-query": "^5.51.9",
+    "@wagmi/vue": "^0.0.32",
+    "epubjs": "^0.3.93",
+    "ethers": "^6.13.2",
+    "nuxt": "^3.12.3",
+    "siwe": "^2.3.2",
+    "uuid": "^10.0.0",
+    "viem": "2.x",
+    "vue": "latest"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^0.5.0",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^9.8.0",
+    "typescript": "^5.5.4"
+  }
+}
