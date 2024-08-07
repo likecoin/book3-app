@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full">
+  <div class="fixed inset-0 flex">
     <UModal
       :model-value="!userStore.address"
       :ui="{
@@ -27,7 +27,7 @@
       <AppMenu />
     </USlideover>
     
-    <NuxtPage :class="{ 'opacity-0': !userStore.address }" />
+    <NuxtPage :class="['overflow-y-auto', { 'opacity-0': !userStore.address }]" />
 
     <NuxtLoadingIndicator />
 

@@ -14,43 +14,70 @@
       </template>
     </PageHeader>
 
-    <main class="px-10 py-4">
-      <ul class="w-full max-w-[768px] mx-auto">
+    <UContainer
+      as="main"
+      :ui="{ base: 'w-full', padding: 'py-6', constrained: '' }"
+    >
+      <ul class="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 justify-stretch items-stretch">
         <li v-for="book in books" :key="book.name">
-          <UCard
-            :ui="{ body: { base: 'flex justify-between gap-4 items-center' } }"
-          >
-            <div class="flex gap-4">
-              <img
-                v-if="bookCovers.has(book.id)"
-                :src="bookCovers.get(book.id)"
-                class="h-[100px] object-cover rounded-md"
-                alt="Cover"
-              >
-              <div>
-                <div>{{ book.metadata.title }}</div>
-                <div class="text-sm text-stone-400">{{ book.name }}</div>
-              </div>
+          <UCard :ui="{ body: { base: 'space-y-4' } }">
+            <img
+              v-if="bookCovers.has(book.id)"
+              :src="bookCovers.get(book.id)"
+              class="object-cover rounded-md"
+              alt="Cover"
+            >
+
+            <div class="space-y-2">
+              <div>{{ book.metadata.title }}</div>
+              <div class="text-xs text-stone-400 text-ellipsis">{{ book.name }}</div>
+              <UButton label="Read" block @click="openBook(book)" />
             </div>
-            <UButton label="Open" @click="openBook(book)" />
           </UCard>
         </li>
       </ul>
-    </main>
+    </UContainer>
 
-    <div class="relative flex-grow px-10">
-      <div
-        ref="renditionEl"
-        class="w-full max-w-[768px] h-full mx-auto font-serif"
-      />
+    <UModal v-model="isReaderOpen" :fullscreen="true">
+      <PageHeader class="sticky top-0" :title="bookName || 'Reader'">
+        <template #trailing>
+          <UButton
+            class="relative"
+            icon="i-heroicons-x-mark"
+            variant="ghost"
+            @click="isReaderOpen = false"
+          />
+        </template>
+      </PageHeader>
+      <div class="relative flex-grow">
+        <div
+          ref="renditionEl"
+          class="w-full h-full mx-auto font-serif"
+        />
 
-      <div
-        class="absolute inset-0 flex justify-between items-center p-2 pointer-events-none"
-      >
-        <UButton class="pointer-events-auto" label="Prev" @click="prevPage" />
-        <UButton class="pointer-events-auto" label="Next" @click="nextPage" />
+        <div
+          class="absolute inset-0 flex justify-between items-center p-2 pointer-events-none"
+        >
+          <UButton
+            class="pointer-events-auto"
+            icon="i-heroicons-chevron-left"
+            variant="soft"
+            size="xl"
+            :ui="{ rounded: 'rounded-full' }"
+            @click="prevPage"
+          />
+          <UButton
+            class="pointer-events-auto"
+            icon="i-heroicons-chevron-right"
+            variant="soft"
+            size="xl"
+            :ui="{ rounded: 'rounded-full' }"
+            @click="nextPage"
+          />
+        </div>
       </div>
-    </div>
+    </UModal>
+
   </div>
 </template>
 
@@ -58,6 +85,9 @@
 import { v4 as uuidV4 } from "uuid";
 import ePub, { type Rendition, type NavItem } from "epubjs";
 import type { PackagingMetadataObject } from "epubjs/types/packaging";
+
+const isReaderOpen = ref(false);
+const bookName = ref("");
 
 const renditionEl = ref<HTMLElement | null>(null);
 
@@ -129,6 +159,11 @@ async function openFiles(event: Event) {
 async function openBook(book: Book) {
   const file = bookFiles.value.get(book.id);
   const epub = ePub(file);
+  isReaderOpen.value = true;
+  bookName.value = book.metadata.title;
+
+  await nextTick();
+
   if (renditionEl.value) {
     navItems.value = [];
     rendition.value?.destroy();
