@@ -1,4 +1,3 @@
-import { defineStore } from "pinia";
 import type { SignableMessage } from "viem";
 
 export const useUserStore = defineStore("userStore", {
@@ -7,7 +6,9 @@ export const useUserStore = defineStore("userStore", {
   }),
   actions: {
     async fetchSettings() {
-      const data: { address: string } = await $fetch("/api/users/settings");
+      // NOTE: Pass the headers in SSR for authentication
+      const headers = useRequestHeaders();
+      const data: { address: string } = await $fetch("/api/users/settings", { headers });
 
       this.address = data?.address;
     },

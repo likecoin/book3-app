@@ -1,30 +1,55 @@
 <template>
   <div class="flex h-full">
-    <ClientOnly>
-      <UModal
-        :model-value="!userStore.address"
-        :ui="{
-          fullscreen: 'h-svh',
-          overlay: { background: 'bg-gray-200 dark:bg-gray-800' }
-        }"
-        prevent-close
-      >
-        <AuthPage />
-      </UModal>
-    </ClientOnly>
+    <UModal
+      :model-value="!userStore.address"
+      :ui="{
+        fullscreen: 'h-svh',
+        overlay: { background: 'bg-gray-200 dark:bg-gray-800' }
+      }"
+      :transition="false"
+      prevent-close
+    >
+      <AuthPage />
+    </UModal>
 
-    <AppMenu class="w-full max-w-[320px] border-r border-gray-200 dark:border-gray-800" />
-  
-    <NuxtPage />
+    <AppMenu class="hidden lg:flex w-full max-w-[320px] border-r border-gray-200 dark:border-gray-800" />
+    <USlideover v-model="isMobileMenuOpen" side="left">
+      <UButton
+        color="gray"
+        variant="ghost"
+        size="sm"
+        icon="i-heroicons-x-mark-20-solid"
+        class="flex absolute end-4 top-4 z-10"
+        square
+        padded
+        @click="isMobileMenuOpen = false"
+      />
+      <AppMenu />
+    </USlideover>
+    
+    <NuxtPage :class="{ 'opacity-0': !userStore.address }" />
+
+    <NuxtLoadingIndicator />
 
     <UNotifications />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from './stores/user';
+const userStore = useUserStore();
+const uiStore = useUIStore();
 
-const userStore = useUserStore()
+const isMobileMenuOpen = computed({
+  get: () => uiStore.isMobileMenuOpen,
+  set: (value) => uiStore.setIsMobileMenuOpen(value),
+});
+
+const route = useRoute();
+
+// NOTE: Close mobile menu on route change
+watch(() => route.fullPath, () => {
+  isMobileMenuOpen.value = false
+});
 
 useHead({
   htmlAttrs: {
@@ -40,5 +65,11 @@ useSeoMeta({
   ogTitle: 'book3.app',
 });
 
-await callOnce(userStore.fetchSettings).catch((() => {}));
+await callOnce(async () => {
+  try {
+    await userStore.fetchSettings();
+  } catch {
+    // Ignore
+  }
+});
 </script>
