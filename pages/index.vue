@@ -1,20 +1,18 @@
 <template>
   <div class="flex flex-col items-stretch flex-grow">
-    <header
-      class="flex justify-between gap-4 px-10 py-4 border-b border-gray-200 dark:border-gray-800"
-    >
-      <h1 class="font-bold text-xl">Books</h1>
-
-      <UButton class="relative">
-        <input
-          type="file"
-          accept="application/epub+zip,application/epub,application/zip"
-          className="absolute inset-0 cursor-pointer opacity-0"
-          @change="openFiles"
-        >
-        Open EPUB
-      </UButton>
-    </header>
+    <PageHeader title="Books">
+      <template #trailing>
+        <UButton class="relative">
+          <input
+            type="file"
+            accept="application/epub+zip,application/epub,application/zip"
+            className="absolute inset-0 cursor-pointer opacity-0"
+            @change="openFiles"
+          >
+          Open EPUB
+        </UButton> 
+      </template>
+    </PageHeader>
 
     <main class="px-10 py-4">
       <ul class="w-full max-w-[768px] mx-auto">

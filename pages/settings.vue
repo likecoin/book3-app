@@ -1,10 +1,6 @@
 <template>
   <div class="flex flex-col items-stretch flex-grow">
-    <header
-      class="flex justify-start gap-4 px-10 py-4 border-b border-gray-200 dark:border-gray-800"
-    >
-      <h1 class="font-bold text-xl">Settings</h1>
-    </header>
+    <PageHeader title="Settings" /> 
 
     <UContainer class="w-full py-6" as="main">
       <UFormGroup label="Wallet Address">
