@@ -2,7 +2,7 @@
   <UContainer
     as="header"
     :ui="{
-      base: 'sticky top-0 flex justify-between items-center gap-4 w-full min-h-[64px] bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800',
+      base: 'sticky top-0 flex justify-between items-center gap-4 w-full min-h-[64px] pb-2 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800',
       constrained: ''
     }"
   >

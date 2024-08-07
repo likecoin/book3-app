@@ -56,22 +56,31 @@
         />
 
         <div
-          class="absolute inset-0 flex justify-between items-center p-2 pointer-events-none"
+          :class="[
+            'absolute',
+            'inset-0',
+            'flex',
+            'justify-between',
+            'items-center',
+            'lg:p-2',
+            'pointer-events-none',
+            'opacity-0 lg:opacity-100',
+          ]"
         >
           <UButton
             class="pointer-events-auto"
             icon="i-heroicons-chevron-left"
             variant="soft"
-            size="xl"
-            :ui="{ rounded: 'rounded-full' }"
+            size="sm"
+            :ui="{ base: 'h-full lg:h-auto' }"
             @click="prevPage"
           />
           <UButton
             class="pointer-events-auto"
             icon="i-heroicons-chevron-right"
             variant="soft"
-            size="xl"
-            :ui="{ rounded: 'rounded-full' }"
+            size="sm"
+            :ui="{ base: 'h-full lg:h-auto' }"
             @click="nextPage"
           />
         </div>
