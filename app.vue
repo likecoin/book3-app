@@ -35,5 +35,10 @@ useHead({
   },
 });
 
+useSeoMeta({
+  title: 'book3.app',
+  ogTitle: 'book3.app',
+});
+
 await callOnce(userStore.fetchSettings).catch((() => {}));
 </script>
