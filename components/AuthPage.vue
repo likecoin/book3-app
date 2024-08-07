@@ -1,6 +1,6 @@
 <template>
   <UCard :ui="{ body: { base: 'space-y-6' } }">
-    <AppLogo class="mx-auto" />
+    <AppLogo class="w-10 mx-auto" />
 
     <p
       class="flex justify-center items-center text-2xl text-gray-900 dark:text-white font-bold text-center"
