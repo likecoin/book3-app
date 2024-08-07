@@ -5,7 +5,7 @@
     <p
       class="flex justify-center items-center text-2xl text-gray-900 dark:text-white font-bold text-center"
     >
-      Get started
+      🐹 Get started
       <UIcon
         class="w-10 h-10 ml-2"
         name="i-heroicons-arrow-left-end-on-rectangle"
@@ -37,34 +37,38 @@
           :ui="{ rounded: 'rounded-full' }"
           @click="createWallet"
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 32 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M2.66675 15.9998C2.66675 23.3628 8.63712 29.3332 16.0001 29.3332C23.363 29.3332 29.3334 23.3628 29.3334 15.9998C29.3334 8.63687 23.363 2.6665 16.0001 2.6665C8.63712 2.6665 2.66675 8.63687 2.66675 15.9998ZM12.5927 11.7035H19.4075C19.9001 11.7035 20.2964 12.0998 20.2964 12.5924V19.4072C20.2964 19.8998 19.9001 20.2961 19.4075 20.2961H12.5927C12.1001 20.2961 11.7038 19.8998 11.7038 19.4072V12.5924C11.7038 12.0998 12.1001 11.7035 12.5927 11.7035Z"
-              fill="white"
-            />
-          </svg>
-          Create Wallet
+          Create Account / Login
         </UButton>
       </div>
     </div>
 
-    <UDivider label="or connect an existing wallet" />
-
-    <UButton
-      v-for="connector in connectors"
-      :key="connector.name"
-      size="xl"
-      block
-      @click="handleConnect(connector)"
+    <UAccordion
+      v-if="otherConnectors.length"
+      :items="[{ slot: 'connectors' }]"
+      :ui="{ wrapper: 'flex flex-col w-full' }"
     >
-      {{ connector.name }}
-    </UButton>
+      <template #default="{ open }">
+        <UButton class="flex justify-center items-center" variant="ghost" rounded>
+          <span>Login with other methods</span>
+          <UIcon :name="open ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'" />
+        </UButton>
+      </template>
+
+      <template #connectors>
+        <ul class="space-y-2">
+          <li v-for="connector in otherConnectors" :key="connector.name">
+            <UButton
+              size="xl"
+              variant="outline"
+              block
+              @click="handleConnect(connector)"
+            >
+              {{ connector.name }}
+            </UButton>
+          </li>
+        </ul>
+      </template>
+    </UAccordion>
   </UCard>
 </template>
 
@@ -86,7 +90,7 @@ const { connectors, connect } = useConnect();
 const { disconnect } = useDisconnect();
 const account = useAccount();
 const userStore = useUserStore();
-const toast = useToast()
+const toast = useToast();
 
 function handleAuthError({
   error,
@@ -105,6 +109,10 @@ function handleAuthError({
     timeout: 0,
   });
 }
+
+const otherConnectors = computed(() => connectors.filter(
+  (connector) => connector.id !== "coinbaseWalletSDK"
+));
 
 const { signMessage } = useSignMessage({
   mutation: {
@@ -135,7 +143,10 @@ const { signMessage } = useSignMessage({
 
 function handleConnect(connector: Connector) {
   connect(
-    { connector, chainId: chainId.value },
+    { 
+      connector,
+      chainId: chainId.value,
+    },
     {
       onError(error) {
         handleAuthError({ error, title: "Failed to connect." });

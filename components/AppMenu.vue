@@ -4,7 +4,7 @@
       base: 'flex flex-col h-full',
       rounded: 'rounded-none',
       body: { base: 'grow' },
-      footer: { base: 'space-y-6' },
+      footer: { base: 'space-y-2' },
     }"
   >
     <template #header>
