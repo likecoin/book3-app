@@ -142,6 +142,10 @@ const { signMessage } = useSignMessage({
 });
 
 function handleConnect(connector: Connector) {
+  if (account.isConnected) {
+    disconnect();
+  }
+
   connect(
     { 
       connector,
@@ -166,6 +170,10 @@ function handleConnect(connector: Connector) {
         }
 
         const address = account.address?.value;
+        if (!address) {
+          handleAuthError({ error: new Error("Failed to get address.") });
+          return;
+        }
 
         const swieMessage = new SiweMessage({
           domain: document.location.host,
