@@ -1,22 +1,10 @@
-import { WagmiPlugin, http, createConfig } from '@wagmi/vue'
-import { baseSepolia } from '@wagmi/core/chains'
-import { coinbaseWallet } from '@wagmi/connectors'
-import { VueQueryPlugin } from '@tanstack/vue-query'
+import { WagmiPlugin } from "@wagmi/vue";
+import { VueQueryPlugin } from "@tanstack/vue-query";
+import { defineNuxtPlugin } from "nuxt/app";
 
-export const config = createConfig({
-  chains: [baseSepolia],
-  connectors: [
-    coinbaseWallet({
-      appName: 'book3.app 🐹',
-      preference: 'smartWalletOnly',
-    }),
-  ],
-  transports: {
-    [baseSepolia.id]: http(),
-  },
-})
+import { config } from "../wagmi";
 
-export default defineNuxtPlugin(nuxtApp => {
-  nuxtApp.vueApp.use(WagmiPlugin, { config })
-  nuxtApp.vueApp.use(VueQueryPlugin, {})
-})
+// NOTE: Possibly will move to @wagmi/vue/nuxt nitro plugin
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.use(WagmiPlugin, { config }).use(VueQueryPlugin, {})
+});
