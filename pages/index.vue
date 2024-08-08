@@ -187,7 +187,6 @@ async function openBook(book: Book) {
     rendition.value.themes.default({
       body: {
         color: "#333",
-        "font-family": "serif !important",
       },
     });
     rendition.value.display();
