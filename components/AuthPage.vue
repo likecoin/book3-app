@@ -1,5 +1,5 @@
 <template>
-  <UCard :ui="{ body: { base: 'space-y-6', padding: 'pt-10' } }">
+  <UCard :ui="{ body: { base: 'space-y-6', padding: 'pt-10' }, rounded: 'rounded-none lg:rounded-lg' }">
     <AppLogo class="h-20 mx-auto" />
 
     <p

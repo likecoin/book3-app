@@ -3,13 +3,14 @@
     <UModal
       :model-value="!userStore.address"
       :ui="{
-        fullscreen: 'h-svh',
+        padding: 'p-0',
+        rounded: 'rounded-none lg:rounded-lg',
         overlay: { background: 'bg-gray-200 dark:bg-gray-800' }
       }"
       :transition="false"
       prevent-close
     >
-      <AuthPage />
+      <AuthPage class="pb-6" />
     </UModal>
 
     <AppMenu class="hidden lg:flex w-full max-w-[320px] border-r border-gray-200 dark:border-gray-800" />
@@ -53,11 +54,15 @@ watch(() => route.fullPath, () => {
 
 useHead({
   htmlAttrs: {
-    class: 'h-full',
+    class: 'h-svh',
   },
   bodyAttrs: {
-    class: 'h-full text-gray-700 dark:text-gray-200 dark:bg-gray-900'
+    class: 'h-svh text-gray-700 dark:text-gray-200 dark:bg-gray-900',
+    style: 'padding-bottom: env(safe-area-inset-bottom);',
   },
+  meta: [
+    { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" },
+  ],
   link: [
     { rel: "apple-touch-icon", sizes: "180x180" ,href: "/apple-touch-icon.png" },
     { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },

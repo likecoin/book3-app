@@ -5,7 +5,7 @@
       rounded: 'rounded-none',
       header: { base: 'flex items-center gap-4' },
       body: { base: 'grow' },
-      footer: { base: 'space-y-2' },
+      footer: { base: 'space-y-2 pb-6 sm:pb-auto' },
     }"
   >
     <template #header>
