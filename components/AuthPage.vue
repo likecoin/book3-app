@@ -29,6 +29,8 @@
         <UButton
           color="white"
           size="xl"
+          :disabled="!!authenticatingConnectorId"
+          :loading="authenticatingConnectorId === 'coinbaseWalletSDK'"
           block
           :ui="{ rounded: 'rounded-full' }"
           @click="createWallet"
@@ -56,6 +58,8 @@
             <UButton
               size="xl"
               variant="outline"
+              :disabled="!!authenticatingConnectorId"
+              :loading="authenticatingConnectorId === connector.id"
               block
               @click="handleConnect(connector)"
             >
@@ -82,11 +86,13 @@ import { SiweMessage } from "siwe";
 import { useUserStore } from '../stores/user';
 
 const chainId = useChainId();
-const { connectors, connect } = useConnect();
-const { disconnect } = useDisconnect();
+const { connectors, connectAsync } = useConnect();
+const { disconnect, disconnectAsync } = useDisconnect();
 const account = useAccount();
 const userStore = useUserStore();
 const toast = useToast();
+
+const authenticatingConnectorId = ref<string | undefined>(undefined);
 
 function handleAuthError({
   error,
@@ -96,6 +102,7 @@ function handleAuthError({
   title?: string;
 }) {
   console.error(error);
+  authenticatingConnectorId.value = undefined;
   disconnect();
   toast.add({
     title,
@@ -110,7 +117,7 @@ const otherConnectors = computed(() => connectors.filter(
   (connector) => connector.id !== "coinbaseWalletSDK"
 ));
 
-const { signMessage } = useSignMessage({
+const { signMessageAsync } = useSignMessage({
   mutation: {
     onError: (error) => {
       handleAuthError({ error, title: "Failed to sign message." });
@@ -133,16 +140,20 @@ const { signMessage } = useSignMessage({
         handleAuthError({ error: error as Error, title: "Failed to login." });
         return;
       }
+
+      authenticatingConnectorId.value = undefined;
     },
   },
 });
 
-function handleConnect(connector: Connector) {
+async function handleConnect(connector: Connector) {
   if (account.isConnected) {
-    disconnect();
+    await disconnectAsync();
   }
 
-  connect(
+  authenticatingConnectorId.value = connector.id;
+
+  await connectAsync(
     { 
       connector,
       chainId: chainId.value,
@@ -183,7 +194,7 @@ function handleConnect(connector: Connector) {
 
         const message = swieMessage.prepareMessage();
 
-        signMessage({ account: address, message });
+        await signMessageAsync({ account: address, message });
       },
     }
   );
