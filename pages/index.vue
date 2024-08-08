@@ -39,7 +39,11 @@
     </UContainer>
 
     <UModal v-model="isReaderOpen" :fullscreen="true">
-      <PageHeader class="sticky top-0" :title="bookName || 'Reader'">
+      <PageHeader
+        class="sticky top-0"
+        :title="bookName || 'Reader'"
+        :is-show-menu-toggle="false"
+      >
         <template #trailing>
           <UButton
             class="relative"

@@ -1,15 +1,11 @@
 <template>
-  <UCard :ui="{ body: { base: 'space-y-6' } }">
-    <AppLogo class="w-10 mx-auto" />
+  <UCard :ui="{ body: { base: 'space-y-6', padding: 'pt-10' } }">
+    <AppLogo class="h-20 mx-auto" />
 
     <p
       class="flex justify-center items-center text-2xl text-gray-900 dark:text-white font-bold text-center"
     >
-      🐹 Get started
-      <UIcon
-        class="w-10 h-10 ml-2"
-        name="i-heroicons-arrow-left-end-on-rectangle"
-      />
+      Get started
     </p>
 
     <div class="relative group rounded-full">
@@ -37,7 +33,7 @@
           :ui="{ rounded: 'rounded-full' }"
           @click="createWallet"
         >
-          Create Account / Login
+          Sign in / Sign up
         </UButton>
       </div>
     </div>

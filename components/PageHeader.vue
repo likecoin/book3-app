@@ -8,6 +8,7 @@
   >
     <div class="flex items-center gap-2">
       <UButton
+        v-if="isShowMenuToggle"
         class="lg:hidden"
         icon="i-heroicons-bars-3"
         size="lg"
@@ -29,6 +30,10 @@ const props = defineProps({
   title: {
     type: String,
     default: '',
+  },
+  isShowMenuToggle: {
+    type: Boolean,
+    default: true,
   },
 });
 </script>
