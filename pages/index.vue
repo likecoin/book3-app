@@ -53,10 +53,11 @@
           />
         </template>
       </PageHeader>
+
       <div class="relative flex-grow">
         <div
           ref="renditionEl"
-          class="w-full h-full mx-auto font-serif"
+          class="absolute inset-0"
         />
 
         <div
