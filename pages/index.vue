@@ -184,6 +184,7 @@ async function openBook(book: Book) {
     rendition.value = epub.renderTo(renditionEl.value, {
       width: "100%",
       height: "100%",
+      allowScriptedContent: true,
     });
     rendition.value.themes.default({
       body: {
