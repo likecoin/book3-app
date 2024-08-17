@@ -24,11 +24,20 @@
         </UInput>
 
       </UFormGroup>
+
+      <UButton variant="outline" block size="xl" @click="signOut">
+        Sign out
+      </UButton>
     </AppPageBody>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useDisconnect } from "@wagmi/vue";
+
+import { useUserStore } from '../stores/user';
+
+const { disconnect } = useDisconnect();
 const userStore = useUserStore();
 
 const toast = useToast();
@@ -39,5 +48,15 @@ function copyAddress() {
     id: 'copy-address',
     title: "Copied address to clipboard"
   });
+}
+
+async function signOut() {
+  try {
+    await userStore.logout();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    disconnect();
+  }
 }
 </script>

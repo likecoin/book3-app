@@ -8,42 +8,24 @@
     <div class="flex flex-col gap-4 grow w-full p-5">
       <UVerticalNavigation class="grow" :links="menuLinks" />
 
-      <UButton variant="outline" size="xl" block @click="logout">
-        Logout
-      </UButton>
+      <UButton
+        label="Settings"
+        icon="i-heroicons-cog-8-tooth"
+        variant="soft"
+        size="sm"
+        to="/settings"
+        block
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useDisconnect } from "@wagmi/vue";
-
-import { useUserStore } from '../stores/user';
-
-const userStore = useUserStore()
-
-const { disconnect } = useDisconnect();
-
 const menuLinks = [
   {
     label: "Books",
     icon: "i-heroicons-book-open",
     to: "/",
   },
-  {
-    label: "Settings",
-    icon: "i-heroicons-cog-8-tooth",
-    to: "/settings",
-  },
 ];
-
-async function logout() {
-  try {
-    await userStore.logout();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    disconnect();
-  }
-}
 </script>
