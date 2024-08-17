@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col items-stretch flex-grow">
-    <PageHeader title="Settings" /> 
+    <AppPageHeader title="Settings" /> 
 
-    <UContainer class="w-full py-6" as="main">
+    <AppPageBody :ui="{ constrained: 'max-w-screen-md' }">
       <UFormGroup label="Wallet Address">
         <UInput
           class="font-mono"
@@ -24,7 +24,7 @@
         </UInput>
 
       </UFormGroup>
-    </UContainer>
+    </AppPageBody>
   </div>
 </template>
 

@@ -1,28 +1,18 @@
 <template>
-  <UCard
-    :ui="{
-      base: 'flex flex-col h-full',
-      rounded: 'rounded-none',
-      header: { base: 'flex items-center gap-4' },
-      body: { base: 'grow' },
-      footer: { base: 'space-y-2 pb-6 sm:pb-auto' },
-    }"
-  >
-    <template #header>
-      <AppLogo class="w-6" />
+  <div class="flex flex-col">
+    <AppHeaderBase class="w-full px-5">
+      <AppLogo class="h-6" />
       <span class="font-mono font-bold">book3.app</span>
-    </template>
+    </AppHeaderBase>
 
-    <div class="flex flex-col gap-2 grow">
-      <UVerticalNavigation :links="menuLinks" />
-    </div>
+    <div class="flex flex-col gap-4 grow w-full p-5">
+      <UVerticalNavigation class="grow" :links="menuLinks" />
 
-    <template #footer>
       <UButton variant="outline" size="xl" block @click="logout">
         Logout
       </UButton>
-    </template>
-  </UCard>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

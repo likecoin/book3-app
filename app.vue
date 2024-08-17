@@ -13,7 +13,16 @@
       <AuthPage class="pb-6" />
     </UModal>
 
-    <AppMenu class="hidden lg:flex w-full max-w-[320px] border-r border-gray-200 dark:border-gray-800" />
+    <AppMenu
+      :class="[
+        'max-lg:hidden',
+        'overflow-y-auto',
+        'w-full',
+        'max-w-[320px]',
+        'border-r',
+        'border-gray-200 dark:border-gray-800',
+      ]"
+    />
     <USlideover v-model="isMobileMenuOpen" side="left">
       <UButton
         color="gray"
@@ -25,7 +34,7 @@
         padded
         @click="isMobileMenuOpen = false"
       />
-      <AppMenu />
+      <AppMenu class="overflow-y-auto" />
     </USlideover>
     
     <NuxtPage :class="['overflow-y-auto', { 'opacity-0': !userStore.address }]" />
@@ -54,10 +63,10 @@ watch(() => route.fullPath, () => {
 
 useHead({
   htmlAttrs: {
-    class: 'h-svh',
+    class: 'h-dvh',
   },
   bodyAttrs: {
-    class: 'h-svh text-gray-700 dark:text-gray-200 dark:bg-gray-900',
+    class: 'h-dvh text-gray-700 dark:text-gray-200 dark:bg-gray-900',
     style: 'padding-bottom: env(safe-area-inset-bottom);',
   },
   meta: [

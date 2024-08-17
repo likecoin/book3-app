@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-stretch flex-grow">
-    <PageHeader title="Books">
+    <AppPageHeader title="Books">
       <template #trailing>
         <UButton class="relative">
           <input
@@ -12,12 +12,9 @@
           Open EPUB
         </UButton> 
       </template>
-    </PageHeader>
+    </AppPageHeader>
 
-    <UContainer
-      as="main"
-      :ui="{ base: 'w-full', padding: 'py-6', constrained: '' }"
-    >
+    <AppPageBody>
       <ul class="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 justify-stretch items-stretch">
         <li v-for="book in books" :key="book.name">
           <UCard :ui="{ body: { base: 'space-y-4' } }">
@@ -36,10 +33,10 @@
           </UCard>
         </li>
       </ul>
-    </UContainer>
+    </AppPageBody>
 
     <UModal v-model="isReaderOpen" :fullscreen="true">
-      <PageHeader
+      <AppPageHeader
         class="sticky top-0"
         :title="bookName || 'Reader'"
         :is-show-menu-toggle="false"
@@ -52,7 +49,7 @@
             @click="isReaderOpen = false"
           />
         </template>
-      </PageHeader>
+      </AppPageHeader>
 
       <div class="relative flex-grow">
         <div

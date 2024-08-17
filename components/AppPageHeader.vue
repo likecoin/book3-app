@@ -1,11 +1,5 @@
 <template>
-  <UContainer
-    as="header"
-    :ui="{
-      base: 'sticky top-0 flex justify-between items-center gap-4 w-full min-h-[64px] bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800',
-      constrained: ''
-    }"
-  >
+  <AppHeaderBase class="justify-between w-full px-5">
     <div class="flex items-center gap-2">
       <UButton
         v-if="isShowMenuToggle"
@@ -20,7 +14,7 @@
     </div>
 
     <slot name="trailing" />
-  </UContainer>
+  </AppHeaderBase>
 </template>
 
 <script setup lang="ts">
