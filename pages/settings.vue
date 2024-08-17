@@ -3,7 +3,7 @@
     <AppPageHeader title="Settings" /> 
 
     <AppPageBody :ui="{ constrained: 'max-w-screen-md' }">
-      <UFormGroup label="Wallet Address">
+      <UFormGroup label="Account">
         <UInput
           class="font-mono"
           :model-value="userStore.address"
