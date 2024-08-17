@@ -54,19 +54,18 @@
       <div class="relative flex-grow bg-white">
         <div
           ref="renditionEl"
-          class="absolute inset-6"
+          class="absolute inset-0 lg:inset-6"
         />
 
         <div
           :class="[
             'absolute',
             'inset-0',
-            'flex',
+            'hidden lg:flex',
             'justify-between',
             'items-center',
-            'lg:p-2',
+            'p-2',
             'pointer-events-none',
-            'opacity-0 lg:opacity-100',
           ]"
         >
           <UButton
@@ -94,7 +93,7 @@
 
 <script setup lang="ts">
 import { v4 as uuidV4 } from "uuid";
-import ePub, { type Rendition, type NavItem } from "epubjs";
+import ePub, { type Rendition as RenditionBase, type NavItem } from "epubjs";
 import type { PackagingMetadataObject } from "epubjs/types/packaging";
 
 const isReaderOpen = ref(false);
@@ -110,12 +109,20 @@ interface Book {
   createdAt: number;
 }
 
+interface Rendition extends RenditionBase {
+  manager?: {
+    container: HTMLElement;
+  };
+}
+
 const books = ref<Book[]>([]);
 const bookFiles = ref(new Map());
 const bookCovers = ref(new Map());
 
 const rendition = ref<Rendition>();
 const navItems = ref<NavItem[]>([]);
+
+let cleanUpClickListener: (() => void) | undefined;
 
 function readBlob(callback: (reader: FileReader) => void) {
   return new Promise<string>((resolve) => {
@@ -189,6 +196,31 @@ async function openBook(book: Book) {
       },
     });
     rendition.value.display();
+
+    rendition.value.on("rendered", (_: never, view: { window: Window; }) => {
+      if (cleanUpClickListener) {
+        cleanUpClickListener();
+      }
+      cleanUpClickListener = useEventListener(view.window, "click", (event) => {
+        for (const element of event.composedPath() as HTMLElement[]) {
+          // NOTE: Ignore clicks on links
+          if (element.tagName === 'A') {
+            return
+          }
+        }
+
+        if ('ontouchstart' in window && view.window) {
+          const width = rendition.value?.manager?.container.clientWidth || 0;
+          const range = width * (1 / 3);
+          const x = event.clientX % width; // Normalize x to be within the window
+          if (x < range) {
+            prevPage();
+          } else if (width - x < range) {
+            nextPage();
+          }
+        }
+      });
+    });
   }
 
   const nav = await epub.loaded.navigation;
