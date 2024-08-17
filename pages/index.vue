@@ -51,10 +51,10 @@
         </template>
       </AppPageHeader>
 
-      <div class="relative flex-grow">
+      <div class="relative flex-grow bg-white">
         <div
           ref="renditionEl"
-          class="absolute inset-0"
+          class="absolute inset-6"
         />
 
         <div
@@ -74,7 +74,7 @@
             icon="i-heroicons-chevron-left"
             variant="soft"
             size="sm"
-            :ui="{ base: 'h-full lg:h-auto' }"
+            :ui="{ base: 'max-lg:w-6 max-lg:h-full' }"
             @click="prevPage"
           />
           <UButton
@@ -82,7 +82,7 @@
             icon="i-heroicons-chevron-right"
             variant="soft"
             size="sm"
-            :ui="{ base: 'h-full lg:h-auto' }"
+            :ui="{ base: 'max-lg:w-6 max-lg:h-full' }"
             @click="nextPage"
           />
         </div>
@@ -202,4 +202,29 @@ function nextPage() {
 function prevPage() {
   rendition.value?.prev();
 }
+
+useEventListener("keydown", (event) => {
+  switch (event.key) {
+    case "ArrowRight":
+    case "ArrowDown":
+      nextPage();
+      break;
+
+    case "ArrowLeft":
+    case "ArrowUp":
+      prevPage();
+      break;
+    
+    case "Space":
+      if (event.shiftKey) {
+        prevPage();
+      } else {
+        nextPage();
+      }
+      break;
+
+    default:
+      break;
+  }
+});
 </script>
