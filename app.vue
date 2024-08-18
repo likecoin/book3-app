@@ -23,18 +23,21 @@
         'border-gray-200 dark:border-gray-800',
       ]"
     />
-    <USlideover v-model="isMobileMenuOpen" side="left">
+    <USlideover
+      v-model="isMobileMenuOpen"
+      side="left"
+      :ui="{ base: 'flex flex-col' }"
+    >
       <UButton
         color="gray"
         variant="ghost"
-        size="sm"
         icon="i-heroicons-x-mark-20-solid"
-        class="flex absolute end-4 top-4 z-10"
+        class="absolute top-4 right-4 z-20"
         square
         padded
         @click="isMobileMenuOpen = false"
       />
-      <AppMenu class="overflow-y-auto" />
+      <AppMenu class="grow overflow-y-auto" />
     </USlideover>
 
     <NuxtPage
