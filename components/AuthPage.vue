@@ -107,7 +107,7 @@ function handleAuthError({
   toast.add({
     title,
     color: 'red',
-    description: error?.toString(),
+    description: error.message || error?.toString(),
     icon: 'i-heroicons-exclamation-triangle',
     timeout: 0,
   });

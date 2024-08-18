@@ -8,7 +8,10 @@ export const useUserStore = defineStore("userStore", {
     async fetchSettings() {
       // NOTE: Pass the headers in SSR for authentication
       const headers = useRequestHeaders();
-      const data: { address: string } = await $fetch("/api/users/settings", { headers });
+      const data = await $fetch<{ address: string }>("/api/users/settings", { headers }).catch((error) => {
+        if (typeof error.data === "string") throw new Error(error.data);
+        throw error;
+      });
 
       this.address = data?.address;
     },
@@ -21,12 +24,15 @@ export const useUserStore = defineStore("userStore", {
       message: SignableMessage,
       signature: `0x${string}`
     }) {
-      const data: { address: string } = await $fetch("/api/users/login", {
+      const data = await $fetch<{ address: string }>("/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ address, message, signature }),
+      }).catch((error) => {
+        if (typeof error.data === "string") throw new Error(error.data);
+        throw error;
       });
       this.address = data.address;
     },
