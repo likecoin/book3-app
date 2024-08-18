@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-stretch flex-grow">
-    <AppPageHeader title="Settings" /> 
+    <AppPageHeader title="Settings" />
 
     <AppPageBody :ui="{ constrained: 'max-w-screen-md' }">
       <UFormGroup label="Account">
@@ -22,7 +22,6 @@
             />
           </template>
         </UInput>
-
       </UFormGroup>
 
       <UButton variant="outline" block size="xl" @click="signOut">
@@ -35,7 +34,7 @@
 <script setup lang="ts">
 import { useDisconnect } from "@wagmi/vue";
 
-import { useUserStore } from '../stores/user';
+import { useUserStore } from "../stores/user";
 
 const { disconnect } = useDisconnect();
 const userStore = useUserStore();
@@ -45,8 +44,8 @@ const toast = useToast();
 function copyAddress() {
   navigator.clipboard.writeText(userStore.address);
   toast.add({
-    id: 'copy-address',
-    title: "Copied address to clipboard"
+    id: "copy-address",
+    title: "Copied address to clipboard",
   });
 }
 

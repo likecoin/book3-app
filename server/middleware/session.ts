@@ -1,8 +1,6 @@
-const {
-  NODE_ENV,
-} = process.env;
+const { NODE_ENV } = process.env;
 
-const isDev = NODE_ENV !== 'production';
+const isDev = NODE_ENV !== "production";
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
@@ -10,7 +8,7 @@ export default defineEventHandler(async (event) => {
     name: config.public.sessionName,
     password: config.sessionSecret,
     cookie: {
-      sameSite: isDev ? 'lax' : undefined,
+      sameSite: isDev ? "lax" : undefined,
     },
   });
 });

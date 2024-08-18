@@ -23,7 +23,7 @@ const uiStore = useUIStore();
 const props = defineProps({
   title: {
     type: String,
-    default: '',
+    default: "",
   },
   isShowMenuToggle: {
     type: Boolean,

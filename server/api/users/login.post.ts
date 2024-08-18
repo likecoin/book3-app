@@ -1,19 +1,24 @@
-import { verifyMessage } from '@wagmi/vue/actions';
-import { parseSiweMessage } from 'viem/siwe';
+import { verifyMessage } from "@wagmi/vue/actions";
+import { parseSiweMessage } from "viem/siwe";
 
-import { config as wagmiConfig } from '@/wagmi';
+import { config as wagmiConfig } from "@/wagmi";
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
-  const session = await useSession(event, { name: config.public.sessionName, password: config.sessionSecret });
+  const session = await useSession(event, {
+    name: config.public.sessionName,
+    password: config.sessionSecret,
+  });
   if (!session) {
-    event.respondWith(new Response('Missing session.', { status: 401 }));
+    event.respondWith(new Response("Missing session.", { status: 401 }));
     return;
   }
 
   const nonce = session.data?.nonce;
   if (!nonce) {
-    event.respondWith(new Response('Missing nonce in session.', { status: 401 }));
+    event.respondWith(
+      new Response("Missing nonce in session.", { status: 401 }),
+    );
     return;
   }
 
@@ -25,32 +30,38 @@ export default defineEventHandler(async (event) => {
   try {
     body = await readBody(event);
     if (!body.address) {
-      event.respondWith(new Response('Missing address in request body.', { status: 400 }));
+      event.respondWith(
+        new Response("Missing address in request body.", { status: 400 }),
+      );
       return;
     }
     if (!body.message) {
-      event.respondWith(new Response('Missing message in request body.', { status: 400 }));
+      event.respondWith(
+        new Response("Missing message in request body.", { status: 400 }),
+      );
       return;
     }
     if (!body.signature) {
-      event.respondWith(new Response('Missing signature in request body.', { status: 400 }));
+      event.respondWith(
+        new Response("Missing signature in request body.", { status: 400 }),
+      );
       return;
     }
   } catch (error) {
     console.error(error);
-    event.respondWith(new Response('Invalid request body.', { status: 400 }));
+    event.respondWith(new Response("Invalid request body.", { status: 400 }));
     return;
   }
 
   try {
     const parsedMessage = parseSiweMessage(body.message);
     if (parsedMessage.address !== body.address) {
-      event.respondWith(new Response('Address mismatch.', { status: 422 }));
+      event.respondWith(new Response("Address mismatch.", { status: 422 }));
       return;
     }
 
     if (parsedMessage.nonce !== nonce) {
-      event.respondWith(new Response('Nonce mismatch.', { status: 422 }));
+      event.respondWith(new Response("Nonce mismatch.", { status: 422 }));
       return;
     }
 
@@ -61,7 +72,11 @@ export default defineEventHandler(async (event) => {
     });
 
     if (!isValid) {
-      event.respondWith(new Response('Invalid signed message for the given address.', { status: 422 }));
+      event.respondWith(
+        new Response("Invalid signed message for the given address.", {
+          status: 422,
+        }),
+      );
       return;
     }
 

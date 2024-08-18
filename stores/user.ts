@@ -2,13 +2,15 @@ import type { SignableMessage } from "viem";
 
 export const useUserStore = defineStore("userStore", {
   state: () => ({
-    address: '',
+    address: "",
   }),
   actions: {
     async fetchSettings() {
       // NOTE: Pass the headers in SSR for authentication
       const headers = useRequestHeaders();
-      const data = await $fetch<{ address: string }>("/api/users/settings", { headers }).catch((error) => {
+      const data = await $fetch<{ address: string }>("/api/users/settings", {
+        headers,
+      }).catch((error) => {
         if (typeof error.data === "string") throw new Error(error.data);
         throw error;
       });
@@ -18,11 +20,11 @@ export const useUserStore = defineStore("userStore", {
     async login({
       address,
       message,
-      signature
+      signature,
     }: {
-      address: `0x${string}`,
-      message: SignableMessage,
-      signature: `0x${string}`
+      address: `0x${string}`;
+      message: SignableMessage;
+      signature: `0x${string}`;
     }) {
       const data = await $fetch<{ address: string }>("/api/users/login", {
         method: "POST",
@@ -37,8 +39,8 @@ export const useUserStore = defineStore("userStore", {
       this.address = data.address;
     },
     async logout() {
-      this.address = '';
+      this.address = "";
       await $fetch("/api/users/logout", { method: "POST" });
-    }
-  }
-})
+    },
+  },
+});

@@ -1,5 +1,10 @@
 <template>
-  <UCard :ui="{ body: { base: 'space-y-6', padding: 'pt-10' }, rounded: 'rounded-none lg:rounded-lg' }">
+  <UCard
+    :ui="{
+      body: { base: 'space-y-6', padding: 'pt-10' },
+      rounded: 'rounded-none lg:rounded-lg',
+    }"
+  >
     <AppLogo class="h-20 mx-auto" />
 
     <p
@@ -46,9 +51,15 @@
       :ui="{ wrapper: 'flex flex-col w-full' }"
     >
       <template #default="{ open }">
-        <UButton class="flex justify-center items-center" variant="ghost" rounded>
+        <UButton
+          class="flex justify-center items-center"
+          variant="ghost"
+          rounded
+        >
           <span>Login with other methods</span>
-          <UIcon :name="open ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'" />
+          <UIcon
+            :name="open ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
+          />
         </UButton>
       </template>
 
@@ -83,7 +94,7 @@ import {
 } from "@wagmi/vue";
 import { SiweMessage } from "siwe";
 
-import { useUserStore } from '../stores/user';
+import { useUserStore } from "../stores/user";
 
 const chainId = useChainId();
 const { connectors, connectAsync } = useConnect();
@@ -106,16 +117,16 @@ function handleAuthError({
   disconnect();
   toast.add({
     title,
-    color: 'red',
+    color: "red",
     description: error.message || error?.toString(),
-    icon: 'i-heroicons-exclamation-triangle',
+    icon: "i-heroicons-exclamation-triangle",
     timeout: 0,
   });
 }
 
-const otherConnectors = computed(() => connectors.filter(
-  (connector) => connector.id !== "coinbaseWalletSDK"
-));
+const otherConnectors = computed(() =>
+  connectors.filter((connector) => connector.id !== "coinbaseWalletSDK"),
+);
 
 const { signMessageAsync } = useSignMessage({
   mutation: {
@@ -154,7 +165,7 @@ async function handleConnect(connector: Connector) {
   authenticatingConnectorId.value = connector.id;
 
   await connectAsync(
-    { 
+    {
       connector,
       chainId: chainId.value,
     },
@@ -167,7 +178,10 @@ async function handleConnect(connector: Connector) {
         try {
           nonce = await $fetch("/api/users/nonce");
         } catch (error) {
-          handleAuthError({ error: error as Error, title: "Failed to fetch nonce." });
+          handleAuthError({
+            error: error as Error,
+            title: "Failed to fetch nonce.",
+          });
           return;
         }
         if (!nonce) {
@@ -196,13 +210,13 @@ async function handleConnect(connector: Connector) {
 
         await signMessageAsync({ account: address, message });
       },
-    }
+    },
   );
 }
 
 function createWallet() {
   const coinbaseWalletConnector = connectors.find(
-    (connector) => connector.id === "coinbaseWalletSDK"
+    (connector) => connector.id === "coinbaseWalletSDK",
   );
   if (coinbaseWalletConnector) {
     handleConnect(coinbaseWalletConnector);

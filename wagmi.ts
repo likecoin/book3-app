@@ -1,6 +1,6 @@
-import { http, createConfig } from '@wagmi/vue'
-import { baseSepolia } from '@wagmi/core/chains'
-import { coinbaseWallet } from '@wagmi/connectors'
+import { http, createConfig } from "@wagmi/vue";
+import { baseSepolia } from "@wagmi/core/chains";
+import { coinbaseWallet } from "@wagmi/connectors";
 
 export const config = createConfig({
   chains: [baseSepolia],
@@ -18,7 +18,6 @@ export const config = createConfig({
 
 declare module "@wagmi/vue" {
   interface Register {
-    config: typeof config
+    config: typeof config;
   }
-};
-
+}

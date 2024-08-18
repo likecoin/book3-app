@@ -8,14 +8,16 @@
             accept="application/epub+zip,application/epub,application/zip"
             className="absolute inset-0 cursor-pointer opacity-0"
             @change="openFiles"
-          >
+          />
           Open EPUB
-        </UButton> 
+        </UButton>
       </template>
     </AppPageHeader>
 
     <AppPageBody>
-      <ul class="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 justify-stretch items-stretch">
+      <ul
+        class="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 justify-stretch items-stretch"
+      >
         <li v-for="book in books" :key="book.name">
           <UCard :ui="{ body: { base: 'space-y-4' } }">
             <img
@@ -23,11 +25,13 @@
               :src="bookCovers.get(book.id)"
               class="object-cover rounded-md"
               alt="Cover"
-            >
+            />
 
             <div class="space-y-2">
               <div>{{ book.metadata.title }}</div>
-              <div class="text-xs text-stone-400 text-ellipsis">{{ book.name }}</div>
+              <div class="text-xs text-stone-400 text-ellipsis">
+                {{ book.name }}
+              </div>
               <UButton label="Read" block @click="openBook(book)" />
             </div>
           </UCard>
@@ -52,10 +56,7 @@
       </AppPageHeader>
 
       <div class="relative flex-grow bg-white">
-        <div
-          ref="renditionEl"
-          class="absolute inset-0 lg:inset-6"
-        />
+        <div ref="renditionEl" class="absolute inset-0 lg:inset-6" />
 
         <div
           :class="[
@@ -87,7 +88,6 @@
         </div>
       </div>
     </UModal>
-
   </div>
 </template>
 
@@ -197,19 +197,19 @@ async function openBook(book: Book) {
     });
     rendition.value.display();
 
-    rendition.value.on("rendered", (_: never, view: { window: Window; }) => {
+    rendition.value.on("rendered", (_: never, view: { window: Window }) => {
       if (cleanUpClickListener) {
         cleanUpClickListener();
       }
       cleanUpClickListener = useEventListener(view.window, "click", (event) => {
         for (const element of event.composedPath() as HTMLElement[]) {
           // NOTE: Ignore clicks on links
-          if (element.tagName === 'A') {
-            return
+          if (element.tagName === "A") {
+            return;
           }
         }
 
-        if ('ontouchstart' in window && view.window) {
+        if ("ontouchstart" in window && view.window) {
           const width = rendition.value?.manager?.container.clientWidth || 0;
           const range = width * (1 / 3);
           const x = event.clientX % width; // Normalize x to be within the window
@@ -246,7 +246,7 @@ useEventListener("keydown", (event) => {
     case "ArrowUp":
       prevPage();
       break;
-    
+
     case "Space":
       if (event.shiftKey) {
         prevPage();

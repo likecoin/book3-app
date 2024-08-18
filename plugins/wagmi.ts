@@ -6,5 +6,5 @@ import { config } from "../wagmi";
 
 // NOTE: Possibly will move to @wagmi/vue/nuxt nitro plugin
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(WagmiPlugin, { config }).use(VueQueryPlugin, {})
+  nuxtApp.vueApp.use(WagmiPlugin, { config }).use(VueQueryPlugin, {});
 });

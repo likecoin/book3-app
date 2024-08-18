@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from "tailwind-merge";
 
 const props = defineProps<{
   ui?: {
@@ -16,8 +16,8 @@ const props = defineProps<{
 }>();
 
 const ui = computed(() => ({
-  base: twMerge('w-full space-y-6', props?.ui?.base),
-  padding: twMerge('pt-6 pb-20', props?.ui?.padding),
-  constrained: props?.ui?.constrained || '',
+  base: twMerge("w-full space-y-6", props?.ui?.base),
+  padding: twMerge("pt-6 pb-20", props?.ui?.padding),
+  constrained: props?.ui?.constrained || "",
 }));
 </script>

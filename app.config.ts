@@ -1,8 +1,8 @@
 export default defineAppConfig({
   ui: {
-    primary: 'amber',
+    primary: "amber",
     modal: {
-      fullscreen: 'h-svh',
-    }
-  }
+      fullscreen: "h-svh",
+    },
+  },
 });
