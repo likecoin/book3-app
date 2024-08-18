@@ -7,7 +7,7 @@ const isDev = NODE_ENV !== 'production';
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
   await useSession(event, {
-    name: 'book3_app_session',
+    name: config.public.sessionName,
     password: config.sessionSecret,
     cookie: {
       sameSite: isDev ? 'lax' : undefined,

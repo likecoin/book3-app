@@ -5,7 +5,7 @@ import { config as wagmiConfig } from '@/wagmi';
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
-  const session = await useSession(event, { password: config.sessionSecret });
+  const session = await useSession(event, { name: config.public.sessionName, password: config.sessionSecret });
   if (!session) {
     event.respondWith(new Response('Missing session.', { status: 401 }));
     return;
