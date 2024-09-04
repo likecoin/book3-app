@@ -16,7 +16,7 @@
 
     <AppPageBody>
       <ul
-        class="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 justify-stretch items-stretch"
+        class="grid sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-4 justify-stretch items-stretch"
       >
         <li v-for="book in books" :key="book.name">
           <UCard :ui="{ body: { base: 'space-y-4' } }">
@@ -62,9 +62,27 @@
         </h1>
 
         <template #trailing>
-          <div class="flex justify-end">
+          <div class="relative flex justify-end gap-2">
+            <UPopover>
+              <UButton icon="i-heroicons-language" variant="ghost" />
+
+              <template #panel>
+                <div class="flex gap-2 items-center p-2">
+                  <UButton
+                    icon="i-heroicons-minus"
+                    variant="ghost"
+                    @click="decreaseFontSize"
+                  />
+                  <USelect v-model="fontSize" :options="fontSizeOptions" />
+                  <UButton
+                    icon="i-heroicons-plus"
+                    variant="ghost"
+                    @click="increaseFontSize"
+                  />
+                </div>
+              </template>
+            </UPopover>
             <UButton
-              class="relative"
               icon="i-heroicons-x-mark"
               variant="ghost"
               @click="isReaderOpen = false"
@@ -157,6 +175,14 @@ watch(activeNavItemHref, (href) => {
   }
 });
 
+const fontSizeOptions = [
+  6, 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64, 72,
+];
+const fontSize = ref(fontSizeOptions[9]);
+watch(fontSize, (size) => {
+  rendition.value?.themes.fontSize(`${size}px`);
+});
+
 let cleanUpClickListener: (() => void) | undefined;
 
 function readBlob(callback: (reader: FileReader) => void) {
@@ -230,6 +256,7 @@ async function openBook(book: Book) {
         color: "#333",
       },
     });
+    rendition.value.themes.fontSize(`${fontSize.value}px`);
     rendition.value.display();
 
     rendition.value.on("rendered", (_: never, view: { window: Window }) => {
@@ -281,6 +308,19 @@ function nextPage() {
 
 function prevPage() {
   rendition.value?.prev();
+}
+
+function adjustFontSize(size: number) {
+  const index = fontSizeOptions.indexOf(fontSize.value);
+  fontSize.value = fontSizeOptions[index + size] || fontSize.value;
+}
+
+function increaseFontSize() {
+  adjustFontSize(+1);
+}
+
+function decreaseFontSize() {
+  adjustFontSize(-1);
 }
 
 useEventListener("keydown", (event) => {
