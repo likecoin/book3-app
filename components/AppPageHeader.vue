@@ -10,8 +10,12 @@
         @click="uiStore.setIsMobileMenuOpen(true)"
       />
 
-      <h1 class="font-bold text-xl">{{ props.title }}</h1>
+      <h1 v-if="props.title" class="font-bold text-xl">{{ props.title }}</h1>
+
+      <slot name="leading" />
     </div>
+
+    <slot />
 
     <slot name="trailing" />
   </AppHeaderBase>

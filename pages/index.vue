@@ -45,17 +45,31 @@
 
     <UModal v-model="isReaderOpen" :fullscreen="true">
       <AppPageHeader
-        class="sticky top-0"
-        :title="bookName || $t('reader_view_header_title_default')"
+        class="sticky top-0 lg:grid grid-cols-3 items-center"
         :is-show-menu-toggle="false"
       >
-        <template #trailing>
-          <UButton
-            class="relative"
-            icon="i-heroicons-x-mark"
-            variant="ghost"
-            @click="isReaderOpen = false"
+        <template #leading>
+          <USelect
+            v-model="activeNavItemHref"
+            icon="i-heroicons-list-bullet"
+            :options="navItemOptions"
+            placeholder="Table of Contents"
           />
+        </template>
+
+        <h1 class="max-lg:hidden text-sm text-center">
+          {{ bookName || $t("reader_view_header_title_default") }}
+        </h1>
+
+        <template #trailing>
+          <div class="flex justify-end">
+            <UButton
+              class="relative"
+              icon="i-heroicons-x-mark"
+              variant="ghost"
+              @click="isReaderOpen = false"
+            />
+          </div>
         </template>
       </AppPageHeader>
 
@@ -97,7 +111,11 @@
 
 <script setup lang="ts">
 import { v4 as uuidV4 } from "uuid";
-import ePub, { type Rendition as RenditionBase, type NavItem } from "epubjs";
+import ePub, {
+  type Rendition as RenditionBase,
+  type NavItem,
+  type Location,
+} from "epubjs";
 import type { PackagingMetadataObject } from "epubjs/types/packaging";
 
 const isReaderOpen = ref(false);
@@ -125,6 +143,19 @@ const bookCovers = ref(new Map());
 
 const rendition = ref<Rendition>();
 const navItems = ref<NavItem[]>([]);
+const navItemOptions = computed(() =>
+  navItems.value.map((item) => ({
+    label: item.label,
+    value: item.href,
+  })),
+);
+
+const activeNavItemHref = ref<string | undefined>();
+watch(activeNavItemHref, (href) => {
+  if (href) {
+    rendition.value?.display(href);
+  }
+});
 
 let cleanUpClickListener: (() => void) | undefined;
 
@@ -225,10 +256,23 @@ async function openBook(book: Book) {
         }
       });
     });
+
+    rendition.value.on("relocated", (location: Location) => {
+      const href = location.start.href;
+      if (navItems.value.some((item) => item.href === href)) {
+        activeNavItemHref.value = href;
+      }
+    });
   }
 
   const nav = await epub.loaded.navigation;
-  navItems.value = nav.toc;
+  navItems.value = nav.toc.flatMap((item) => {
+    if (item.subitems) {
+      return [item, ...item.subitems];
+    }
+    return item;
+  });
+  activeNavItemHref.value = nav.toc[0]?.href;
 }
 
 function nextPage() {
