@@ -10,7 +10,7 @@
     <p
       class="flex justify-center items-center text-2xl text-gray-900 dark:text-white font-bold text-center"
     >
-      Get started
+      {{ $t("auth_page_tagline") }}
     </p>
 
     <div class="relative group rounded-full">
@@ -32,6 +32,7 @@
       </div>
       <div class="relative rounded-[inherit] bg-black">
         <UButton
+          :label="$t('auth_page_sign_in_or_sign_up_button_label')"
           color="white"
           size="xl"
           :disabled="!!authenticatingConnectorId"
@@ -39,9 +40,7 @@
           block
           :ui="{ rounded: 'rounded-full' }"
           @click="createWallet"
-        >
-          Sign in / Sign up
-        </UButton>
+        />
       </div>
     </div>
 
@@ -53,29 +52,27 @@
       <template #default="{ open }">
         <UButton
           class="flex justify-center items-center"
+          :label="$t('auth_page_sign_in_with_other_method_button_label')"
+          :trailing-icon="
+            open ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'
+          "
           variant="ghost"
           rounded
-        >
-          <span>Login with other methods</span>
-          <UIcon
-            :name="open ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
-          />
-        </UButton>
+        />
       </template>
 
       <template #connectors>
         <ul class="space-y-2">
           <li v-for="connector in otherConnectors" :key="connector.name">
             <UButton
+              :label="connector.name"
               size="xl"
               variant="outline"
               :disabled="!!authenticatingConnectorId"
               :loading="authenticatingConnectorId === connector.id"
               block
               @click="handleConnect(connector)"
-            >
-              {{ connector.name }}
-            </UButton>
+            />
           </li>
         </ul>
       </template>

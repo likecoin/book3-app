@@ -10,7 +10,7 @@
       :transition="false"
       prevent-close
     >
-      <AuthPage class="pb-6" />
+      <AuthPage />
     </UModal>
 
     <AppMenu

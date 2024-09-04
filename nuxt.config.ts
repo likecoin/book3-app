@@ -20,5 +20,13 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@wagmi/vue/nuxt",
     "@vueuse/nuxt",
+    "@nuxtjs/i18n",
   ],
+  i18n: {
+    vueI18n: "./i18n/config.ts",
+    locales: [
+      { code: "en", name: "English" },
+      { code: "zh-Hant", name: "繁體中文" },
+    ],
+  },
 });

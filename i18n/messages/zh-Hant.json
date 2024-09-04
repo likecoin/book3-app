@@ -1,0 +1,15 @@
+{
+  "auth_page_sign_in_or_sign_up_button_label": "登錄 / 註册",
+  "auth_page_sign_in_with_other_method_button_label": "用其他方式登錄",
+  "auth_page_tagline": "開始",
+  "books_page_header_open_epub_button_label": "匯入 EPUB",
+  "books_page_header_title": "書庫",
+  "books_page_item_read_button_label": "閱讀",
+  "menu_item_books": "書庫",
+  "menu_item_settings": "設定",
+  "reader_view_header_title_default": "閱讀器",
+  "settings_page_account_label": "帳戶",
+  "settings_page_header_title": "設定",
+  "settings_page_language_label": "語言",
+  "settings_page_sign_out_button_label": "登出"
+}

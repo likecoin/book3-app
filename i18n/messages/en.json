@@ -1,0 +1,15 @@
+{
+  "auth_page_sign_in_or_sign_up_button_label": "Sign in / Sign up",
+  "auth_page_sign_in_with_other_method_button_label": "Sign in with other methods",
+  "auth_page_tagline": "Get started",
+  "books_page_header_open_epub_button_label": "Open EPUB",
+  "books_page_header_title": "Books",
+  "books_page_item_read_button_label": "Read",
+  "menu_item_books": "Books",
+  "menu_item_settings": "Settings",
+  "reader_view_header_title_default": "Reader",
+  "settings_page_account_label": "Account",
+  "settings_page_header_title": "Settings",
+  "settings_page_language_label": "Language",
+  "settings_page_sign_out_button_label": "Sign out"
+}

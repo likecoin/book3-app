@@ -9,11 +9,11 @@
       <UVerticalNavigation class="grow" :links="menuLinks" />
 
       <UButton
-        label="Settings"
+        :label="$t('menu_item_settings')"
         icon="i-heroicons-cog-8-tooth"
         variant="soft"
         size="sm"
-        to="/settings"
+        :to="localePath({ name: 'settings' })"
         block
       />
     </div>
@@ -21,11 +21,14 @@
 </template>
 
 <script setup lang="ts">
-const menuLinks = [
+const { t: $t } = useI18n();
+const localePath = useLocalePath();
+
+const menuLinks = computed(() => [
   {
-    label: "Books",
+    label: $t("menu_item_books"),
     icon: "i-heroicons-book-open",
-    to: "/",
+    to: localePath({ name: "index" }),
   },
-];
+]);
 </script>

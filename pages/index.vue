@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-stretch flex-grow">
-    <AppPageHeader title="Books">
+    <AppPageHeader :title="$t('books_page_header_title')">
       <template #trailing>
         <UButton class="relative">
           <input
@@ -9,7 +9,7 @@
             className="absolute inset-0 cursor-pointer opacity-0"
             @change="openFiles"
           />
-          Open EPUB
+          {{ $t("books_page_header_open_epub_button_label") }}
         </UButton>
       </template>
     </AppPageHeader>
@@ -32,7 +32,11 @@
               <div class="text-xs text-stone-400 text-ellipsis">
                 {{ book.name }}
               </div>
-              <UButton label="Read" block @click="openBook(book)" />
+              <UButton
+                :label="$t('books_page_item_read_button_label')"
+                block
+                @click="openBook(book)"
+              />
             </div>
           </UCard>
         </li>
@@ -42,7 +46,7 @@
     <UModal v-model="isReaderOpen" :fullscreen="true">
       <AppPageHeader
         class="sticky top-0"
-        :title="bookName || 'Reader'"
+        :title="bookName || $t('reader_view_header_title_default')"
         :is-show-menu-toggle="false"
       >
         <template #trailing>
