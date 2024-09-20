@@ -7,3 +7,10 @@ export interface Book {
   metadata: PackagingMetadataObject;
   createdAt: number;
 }
+
+export interface EpubView {
+  window: Window;
+  settings: {
+    direction: "ltr" | "rtl";
+  };
+}

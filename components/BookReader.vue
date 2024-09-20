@@ -67,7 +67,7 @@
           variant="soft"
           size="sm"
           :ui="{ base: 'max-lg:w-6 max-lg:h-full' }"
-          @click="prevPage"
+          @click="handleLeftArrowButtonClick"
         />
         <UButton
           class="pointer-events-auto"
@@ -75,7 +75,7 @@
           variant="soft"
           size="sm"
           :ui="{ base: 'max-lg:w-6 max-lg:h-full' }"
-          @click="nextPage"
+          @click="handleRightArrowButtonClick"
         />
       </div>
     </div>
@@ -89,7 +89,7 @@ import ePub, {
   type Location,
 } from "epubjs";
 
-import type { Book } from "~/types";
+import type { Book, EpubView } from "~/types";
 
 const props = defineProps<{
   book: Book | null;
@@ -142,6 +142,7 @@ const isReaderOpen = computed({
 });
 const bookName = computed(() => props.book?.metadata.title || "");
 const renditionEl = ref<HTMLElement | null>(null);
+const isRightToLeft = ref(false);
 
 async function openBook() {
   const book = props.book;
@@ -171,7 +172,9 @@ async function openBook() {
     rendition.value.themes.fontSize(`${fontSize.value}px`);
     rendition.value.display();
 
-    rendition.value.on("rendered", (_: never, view: { window: Window }) => {
+    rendition.value.on("rendered", (_: never, view: EpubView) => {
+      isRightToLeft.value = view.settings.direction === "rtl";
+
       if (cleanUpClickListener) {
         cleanUpClickListener();
       }
@@ -188,9 +191,9 @@ async function openBook() {
           const range = width * (1 / 3);
           const x = event.clientX % width; // Normalize x to be within the window
           if (x < range) {
-            prevPage();
+            handleLeftArrowButtonClick();
           } else if (width - x < range) {
-            nextPage();
+            handleRightArrowButtonClick();
           }
         }
       });
@@ -222,6 +225,22 @@ function prevPage() {
   rendition.value?.prev();
 }
 
+function handleLeftArrowButtonClick() {
+  if (isRightToLeft.value) {
+    nextPage();
+  } else {
+    prevPage();
+  }
+}
+
+function handleRightArrowButtonClick() {
+  if (isRightToLeft.value) {
+    prevPage();
+  } else {
+    nextPage();
+  }
+}
+
 function adjustFontSize(size: number) {
   const index = fontSizeOptions.indexOf(fontSize.value);
   fontSize.value = fontSizeOptions[index + size] || fontSize.value;
@@ -238,11 +257,15 @@ function decreaseFontSize() {
 useEventListener("keydown", (event) => {
   switch (event.key) {
     case "ArrowRight":
+      handleRightArrowButtonClick();
+      break;
     case "ArrowDown":
       nextPage();
       break;
 
     case "ArrowLeft":
+      handleLeftArrowButtonClick();
+      break;
     case "ArrowUp":
       prevPage();
       break;
