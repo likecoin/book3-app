@@ -18,7 +18,7 @@
       <ul
         class="grid sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-4 justify-stretch items-stretch"
       >
-        <li v-for="book in books" :key="book.name">
+        <li v-for="book in sortedBooks" :key="book.name">
           <UCard :ui="{ body: { base: 'space-y-4' } }">
             <img
               v-if="bookCovers.has(book.id)"
@@ -68,6 +68,8 @@ const i18n = useI18n();
 const books = ref<Book[]>([]);
 const bookFiles = ref(new Map<string, File>());
 const bookCovers = ref(new Map<string, string>());
+
+const sortedBooks = computed(() => [...books.value].reverse());
 
 const openedBook = ref<Book | null>(null);
 const openedBookFile = ref<File | null>(null);
