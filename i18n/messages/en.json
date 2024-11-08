@@ -4,6 +4,7 @@
   "auth_page_tagline": "Get started",
   "books_page_header_open_epub_button_label": "Open EPUB",
   "books_page_header_title": "Books",
+  "books_page_item_delete_confirm_message": "Are you sure you want to delete this book?",
   "books_page_item_read_button_label": "Read",
   "menu_item_books": "Books",
   "menu_item_settings": "Settings",
@@ -11,5 +12,6 @@
   "settings_page_account_label": "Account",
   "settings_page_header_title": "Settings",
   "settings_page_language_label": "Language",
-  "settings_page_sign_out_button_label": "Sign out"
+  "settings_page_sign_out_button_label": "Sign out",
+  "settings_page_sign_out_confirm_message": "Are you sure you want to log out? All data will be cleared."
 }

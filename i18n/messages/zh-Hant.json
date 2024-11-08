@@ -4,6 +4,7 @@
   "auth_page_tagline": "開始",
   "books_page_header_open_epub_button_label": "匯入 EPUB",
   "books_page_header_title": "書庫",
+  "books_page_item_delete_confirm_message": "你確定要刪除這本書嗎？",
   "books_page_item_read_button_label": "閱讀",
   "menu_item_books": "書庫",
   "menu_item_settings": "設定",
@@ -11,5 +12,6 @@
   "settings_page_account_label": "帳戶",
   "settings_page_header_title": "設定",
   "settings_page_language_label": "語言",
-  "settings_page_sign_out_button_label": "登出"
+  "settings_page_sign_out_button_label": "登出",
+  "settings_page_sign_out_confirm_message": "您確定要登出嗎？所有資料將被清除。"
 }

@@ -32,11 +32,20 @@
               <div class="text-xs text-stone-400 text-ellipsis">
                 {{ book.name }}
               </div>
-              <UButton
-                :label="$t('books_page_item_read_button_label')"
-                block
-                @click="openBook(book)"
-              />
+              <footer class="flex items-center gap-2">
+                <UButton
+                  :label="$t('books_page_item_read_button_label')"
+                  block
+                  :ui="{ block: 'w-auto grow' }"
+                  @click="openBook(book)"
+                />
+
+                <UButton
+                  icon="i-heroicons-trash"
+                  variant="outline"
+                  @click="deleteBook(book)"
+                />
+              </footer>
             </div>
           </UCard>
         </li>
@@ -52,6 +61,9 @@ import { v4 as uuidV4 } from "uuid";
 import ePub from "epubjs";
 
 import type { Book } from "~/types";
+
+const { $db } = useNuxtApp();
+const i18n = useI18n();
 
 const books = ref<Book[]>([]);
 const bookFiles = ref(new Map<string, File>());
@@ -93,20 +105,29 @@ async function openFiles(event: Event) {
     const metadata = await epub.loaded.metadata;
 
     const id = uuidV4();
-    books.value.push({
+
+    const book: Book = {
       id,
       name: file.name || `${metadata.title}.epub`,
       size: file.size,
       metadata,
       createdAt: Date.now(),
-    });
-
+    };
+    books.value.push(book);
     bookFiles.value.set(id, file);
 
-    const coverURL = await epub.coverUrl();
-    if (coverURL) {
-      bookCovers.value.set(id, await toDataUrl(coverURL));
-    }
+    await Promise.all([
+      $db.books.add(book),
+      $db.bookFiles.add({ id, file: file }),
+      epub.coverUrl().then(async (url) => {
+        if (url) {
+          const dataURL = await toDataUrl(url);
+          bookCovers.value.set(id, dataURL);
+          return $db.bookCovers.add({ id, url: dataURL });
+        }
+        return undefined;
+      }),
+    ]);
   }
 }
 
@@ -122,4 +143,42 @@ function closeBook() {
   openedBook.value = null;
   openedBookFile.value = null;
 }
+
+async function deleteBook(book: Book) {
+  if (!window.confirm(i18n.t("books_page_item_delete_confirm_message"))) {
+    return;
+  }
+
+  books.value = books.value.filter((b) => b.id !== book.id);
+  bookFiles.value.delete(book.id);
+  bookCovers.value.delete(book.id);
+  await Promise.all([
+    $db.books.delete(book.id),
+    $db.bookFiles.delete(book.id),
+    $db.bookCovers.delete(book.id),
+  ]);
+}
+
+async function restoreBooksFromDb() {
+  try {
+    const dbResults = await Promise.all([
+      $db.books.toArray(),
+      $db.bookFiles.toArray(),
+      $db.bookCovers.toArray(),
+    ]);
+    books.value = dbResults[0];
+    dbResults[1].forEach((bookFile) => {
+      bookFiles.value.set(bookFile.id, bookFile.file);
+    });
+    dbResults[2].forEach((bookCover) => {
+      bookCovers.value.set(bookCover.id, bookCover.url);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted(async () => {
+  await restoreBooksFromDb();
+});
 </script>

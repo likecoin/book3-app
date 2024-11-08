@@ -47,6 +47,7 @@ import { useUserStore } from "../stores/user";
 const { disconnect } = useDisconnect();
 const userStore = useUserStore();
 
+const { $db } = useNuxtApp();
 const router = useRouter();
 
 const toast = useToast();
@@ -75,8 +76,19 @@ function copyAddress() {
 }
 
 async function signOut() {
+  const isConfirmed = window.confirm(
+    i18n.t("settings_page_sign_out_confirm_message"),
+  );
+  if (!isConfirmed) return;
+
   try {
     await userStore.logout();
+
+    Promise.all([
+      $db.books.clear(),
+      $db.bookCovers.clear(),
+      $db.bookFiles.clear(),
+    ]);
   } catch (error) {
     console.error(error);
   } finally {
