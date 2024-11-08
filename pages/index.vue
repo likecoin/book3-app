@@ -14,39 +14,90 @@
       </template>
     </AppPageHeader>
 
-    <AppPageBody>
+    <AppPageBody
+      :class="['flex', { 'justify-center': sortedBooks.length > 5 }]"
+    >
       <ul
-        class="grid sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-4 justify-stretch items-stretch"
+        :class="[
+          'grid',
+
+          'grid-cols-2',
+          'md:grid-cols-3',
+          'xl:grid-cols-4',
+          '2xl:grid-cols-5',
+
+          'gap-4',
+          'justify-stretch',
+          'items-stretch',
+
+          'w-full',
+          'max-w-screen-xl',
+        ]"
       >
         <li v-for="book in sortedBooks" :key="book.name">
-          <UCard :ui="{ body: { base: 'space-y-4' } }">
-            <img
-              v-if="bookCovers.has(book.id)"
-              :src="bookCovers.get(book.id)"
-              class="object-cover rounded-md"
-              alt="Cover"
+          <UCard
+            class="group"
+            :ui="{
+              body: { padding: 'sm:px-4' },
+              footer: { base: 'flex items-center gap-2', padding: 'sm:px-4' },
+            }"
+          >
+            <div
+              :class="[
+                'flex',
+                'items-center',
+                'justify-center',
+
+                'h-[120px] md:h-[200px]',
+
+                'cursor-pointer',
+              ]"
+              @click="openBook(book)"
+            >
+              <img
+                v-if="bookCovers.has(book.id)"
+                :class="[
+                  'max-h-full',
+
+                  'object-contain',
+
+                  'rounded-md',
+                  'shadow-xl',
+                  'group-hover:scale-105',
+                  'transition-transform',
+                ]"
+                :src="bookCovers.get(book.id)"
+                alt="Cover"
+              />
+            </div>
+
+            <div
+              class="mt-4 text-center truncate"
+              :title="book.metadata.title"
+              v-text="book.metadata.title"
+            />
+            <div
+              class="mt-1 text-xs text-stone-400 text-center truncate"
+              :title="book.name"
+              v-text="book.name"
             />
 
-            <div class="space-y-2">
-              <div>{{ book.metadata.title }}</div>
-              <div class="text-xs text-stone-400 text-ellipsis">
-                {{ book.name }}
-              </div>
-              <footer class="flex items-center gap-2">
-                <UButton
-                  :label="$t('books_page_item_read_button_label')"
-                  block
-                  :ui="{ block: 'w-auto grow' }"
-                  @click="openBook(book)"
-                />
+            <template #footer>
+              <UButton
+                :label="$t('books_page_item_read_button_label')"
+                variant="outline"
+                icon="i-heroicons-book-open"
+                block
+                :ui="{ block: 'w-auto grow' }"
+                @click="openBook(book)"
+              />
 
-                <UButton
-                  icon="i-heroicons-trash"
-                  variant="outline"
-                  @click="deleteBook(book)"
-                />
-              </footer>
-            </div>
+              <UButton
+                icon="i-heroicons-trash"
+                variant="outline"
+                @click="deleteBook(book)"
+              />
+            </template>
           </UCard>
         </li>
       </ul>
