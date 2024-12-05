@@ -167,6 +167,8 @@ async function openBook() {
     rendition.value.themes.default({
       body: {
         color: "#333",
+        "-webkit-text-size-adjust": "none",
+        "text-size-adjust": "none",
       },
     });
     rendition.value.themes.fontSize(`${fontSize.value}px`);
