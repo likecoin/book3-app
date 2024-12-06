@@ -169,6 +169,7 @@ async function openBook() {
         color: "#333",
         "-webkit-text-size-adjust": "none",
         "text-size-adjust": "none",
+        direction: "ltr",
       },
     });
     rendition.value.themes.fontSize(`${fontSize.value}px`);
