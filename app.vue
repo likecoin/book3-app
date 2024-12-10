@@ -1,7 +1,28 @@
 <template>
   <div class="fixed inset-0 flex">
+    <ClientOnly>
+      <PrivyReactBridge
+        @ready-change="userStore.setIsPrivyReady"
+        @authenticated-change="userStore.setIsPrivyAuthenticated"
+        @user-change="userStore.setPrivyUser"
+        @login-method-change="userStore.setPrivyLogin"
+        @logout-method-change="userStore.setPrivyLogout"
+      />
+    </ClientOnly>
+
+    <div
+      v-if="!isPrivyReady"
+      class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 bg-white"
+    >
+      <AppLogo class="h-20 mx-auto" />
+      <UIcon
+        class="w-10 h-10 mx-auto animate-spin"
+        name="i-heroicons-arrow-path-20-solid"
+      />
+    </div>
+
     <UModal
-      :model-value="!userStore.address"
+      :model-value="isPrivyReady && !isPrivyAuthenticated"
       :ui="{
         padding: 'p-0',
         rounded: 'rounded-none lg:rounded-lg',
@@ -41,7 +62,7 @@
     </USlideover>
 
     <NuxtPage
-      :class="['overflow-y-auto', { 'opacity-0': !userStore.address }]"
+      :class="['overflow-y-auto', { 'opacity-0': !isPrivyAuthenticated }]"
     />
 
     <NuxtLoadingIndicator />
@@ -51,7 +72,17 @@
 </template>
 
 <script setup lang="ts">
+import { setVeauryOptions } from "veaury";
+import { createRoot } from "react-dom/client";
+
+setVeauryOptions({
+  react: {
+    createRoot,
+  },
+});
+
 const userStore = useUserStore();
+const { isPrivyAuthenticated, isPrivyReady } = storeToRefs(userStore);
 const uiStore = useUIStore();
 
 const isMobileMenuOpen = computed({
@@ -109,13 +140,5 @@ useHead({
 useSeoMeta({
   title: "book3.app",
   ogTitle: "book3.app",
-});
-
-await callOnce(async () => {
-  try {
-    await userStore.fetchSettings();
-  } catch {
-    // Ignore
-  }
 });
 </script>
