@@ -12,13 +12,19 @@
 
     <div
       v-if="!isPrivyReady"
-      class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 bg-white"
+      class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6 text-center bg-white dark:bg-gray-900"
     >
       <AppLogo class="h-20 mx-auto" />
-      <UIcon
-        class="w-10 h-10 mx-auto animate-spin"
-        name="i-heroicons-arrow-path-20-solid"
-      />
+      <div class="text-2xl font-bold" v-text="APP_NAME" />
+      <div
+        class="flex flex-col items-center justify-center text-sm text-gray-400"
+      >
+        <UIcon
+          class="w-10 h-10 mx-auto animate-spin"
+          name="i-heroicons-arrow-path-20-solid"
+        />
+        <div v-text="$t('$loading')" />
+      </div>
     </div>
 
     <UModal
@@ -81,9 +87,12 @@ setVeauryOptions({
   },
 });
 
+const APP_NAME = "book3.app";
+
 const userStore = useUserStore();
 const { isPrivyAuthenticated, isPrivyReady } = storeToRefs(userStore);
 const uiStore = useUIStore();
+const { t: $t } = useI18n();
 
 const isMobileMenuOpen = computed({
   get: () => uiStore.isMobileMenuOpen,
@@ -138,7 +147,7 @@ useHead({
 });
 
 useSeoMeta({
-  title: "book3.app",
-  ogTitle: "book3.app",
+  title: APP_NAME,
+  ogTitle: APP_NAME,
 });
 </script>
