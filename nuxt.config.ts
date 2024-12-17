@@ -28,6 +28,9 @@ export default defineNuxtConfig({
       { code: "zh-Hant", name: "繁體中文" },
     ],
   },
+  build: {
+    transpile: ["veaury"],
+  },
   vite: {
     plugins: [
       veauryVitePlugins({
