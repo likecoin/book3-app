@@ -7,10 +7,8 @@ export default defineNuxtConfig({
   },
   compatibilityDate: "2024-04-03",
   runtimeConfig: {
-    sessionSecret:
-      process.env.SESSION_SECRET || "00000000-0000-0000-0000-000000000000",
     public: {
-      sessionName: "book3_app_session",
+      appKitProjectId: "526a2e1c9bf37fb75a7e0a4b11d6008e",
     },
   },
   devtools: { enabled: true },
