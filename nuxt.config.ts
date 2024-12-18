@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     "@wagmi/vue/nuxt",
     "@vueuse/nuxt",
     "@nuxtjs/i18n",
+    "nuxt-security",
   ],
   i18n: {
     vueI18n: "./i18n/config.ts",
@@ -26,5 +27,15 @@ export default defineNuxtConfig({
       { code: "en", name: "English" },
       { code: "zh-Hant", name: "繁體中文" },
     ],
+  },
+  security: {
+    headers: {
+      contentSecurityPolicy: {
+        "frame-ancestors": ["https://secure.walletconnect.org"],
+        "script-src": [
+          "https://deploy-preview-6--book3-app.netlify.app/.netlify/scripts/cdp",
+        ],
+      },
+    },
   },
 });
