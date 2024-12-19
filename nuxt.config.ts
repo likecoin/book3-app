@@ -30,9 +30,16 @@ export default defineNuxtConfig({
   },
   security: {
     headers: {
+      crossOriginEmbedderPolicy: "unsafe-none",
       contentSecurityPolicy: {
         "frame-ancestors": ["'self'", "https://secure.walletconnect.org"],
-        "script-src": ["'self'", 'https:', "'unsafe-inline'", "https://deploy-preview-6--book3-app.netlify.app/.netlify/scripts/cdp", "'nonce-{{nonce}}'"],
+        "script-src": [
+          "'self'",
+          "https:",
+          "'unsafe-inline'",
+          "https://deploy-preview-6--book3-app.netlify.app/.netlify/scripts/cdp",
+          "'nonce-{{nonce}}'",
+        ],
       },
     },
   },
