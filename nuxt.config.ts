@@ -30,6 +30,7 @@ export default defineNuxtConfig({
   },
   security: {
     headers: {
+      referrerPolicy: "origin-when-cross-origin",
       crossOriginEmbedderPolicy: "unsafe-none",
       contentSecurityPolicy: {
         "frame-ancestors": ["'self'", "https://secure.walletconnect.org"],
