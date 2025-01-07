@@ -44,7 +44,14 @@ export default function ({ ["app-id"]: appId, ...props }) {
       appId={appId}
       config={{
         // Display email and wallet as login methods
-        loginMethods: ["email", "google", "wallet"],
+        loginMethodsAndOrder: {
+          primary: [
+            "email",
+            "google",
+            "wallet",
+            "privy:cm4wxxujb022fyujl7g0thb21",
+          ],
+        },
         // Customize Privy's appearance in your app
         appearance: {
           theme: "light",
