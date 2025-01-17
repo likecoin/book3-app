@@ -164,14 +164,20 @@ async function openBook() {
       height: "100%",
       allowScriptedContent: true,
     });
-    rendition.value.themes.default({
-      body: {
-        color: "#333",
-        "-webkit-text-size-adjust": "none",
-        "text-size-adjust": "none",
-        direction: "ltr",
-      },
-    });
+    const metadata = await epub.loaded.metadata;
+    const bodyCSS: Record<string, string> = {
+      color: "#333",
+      "-webkit-text-size-adjust": "none",
+      "text-size-adjust": "none",
+      direction: "ltr", // Mitigate epubjs mixing up dir & page-progression-direction
+    };
+    if (metadata.layout === "pre-paginated" && metadata.spread === "none") {
+      // Make the page centered for book with pre-paginated layout and no spread (single page)
+      bodyCSS["transform-origin"] = "center top !important";
+      bodyCSS["margin-left"] = "auto";
+      bodyCSS["margin-right"] = "auto";
+    }
+    rendition.value.themes.default({ body: bodyCSS });
     rendition.value.themes.fontSize(`${fontSize.value}px`);
     rendition.value.display();
 
