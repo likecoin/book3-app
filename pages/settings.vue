@@ -6,7 +6,7 @@
       <UFormGroup :label="$t('settings_page_account_label')">
         <UInput
           class="font-mono"
-          :model-value="userStore.address"
+          :model-value="address"
           icon="i-heroicons-key"
           size="lg"
           :disabled="true"
@@ -17,7 +17,7 @@
               icon="i-heroicons-clipboard-document"
               variant="ghost"
               size="xs"
-              :disabled="!userStore.address"
+              :disabled="!address"
               @click="copyAddress"
             />
           </template>
@@ -40,12 +40,11 @@
 </template>
 
 <script setup lang="ts">
-import { useDisconnect } from "@wagmi/vue";
-
 import { useUserStore } from "../stores/user";
 
-const { disconnect } = useDisconnect();
 const userStore = useUserStore();
+
+const { address } = storeToRefs(userStore);
 
 const { $db } = useNuxtApp();
 const router = useRouter();
@@ -68,7 +67,7 @@ const locale = computed({
 });
 
 function copyAddress() {
-  navigator.clipboard.writeText(userStore.address);
+  navigator.clipboard.writeText(address.value);
   toast.add({
     id: "copy-address",
     title: "Copied address to clipboard",
@@ -84,15 +83,13 @@ async function signOut() {
   try {
     await userStore.logout();
 
-    Promise.all([
+    await Promise.all([
       $db.books.clear(),
       $db.bookCovers.clear(),
       $db.bookFiles.clear(),
     ]);
   } catch (error) {
     console.error(error);
-  } finally {
-    disconnect();
   }
 }
 </script>

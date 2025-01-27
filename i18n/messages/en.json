@@ -1,4 +1,5 @@
 {
+  "$loading": "Loading",
   "auth_page_sign_in_or_sign_up_button_label": "Sign in / Sign up",
   "auth_page_sign_in_with_other_method_button_label": "Sign in with other methods",
   "auth_page_tagline": "Get started",

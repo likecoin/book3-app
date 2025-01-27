@@ -1,7 +1,34 @@
 <template>
   <div class="fixed inset-0 flex">
+    <ClientOnly>
+      <PrivyReactBridge
+        @ready-change="userStore.setIsPrivyReady"
+        @authenticated-change="userStore.setIsPrivyAuthenticated"
+        @user-change="userStore.setPrivyUser"
+        @login-method-change="userStore.setPrivyLogin"
+        @logout-method-change="userStore.setPrivyLogout"
+      />
+    </ClientOnly>
+
+    <div
+      v-if="!isPrivyReady"
+      class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6 text-center bg-white dark:bg-gray-900"
+    >
+      <AppLogo class="h-20 mx-auto" />
+      <div class="text-2xl font-bold" v-text="APP_NAME" />
+      <div
+        class="flex flex-col items-center justify-center text-sm text-gray-400"
+      >
+        <UIcon
+          class="w-10 h-10 mx-auto animate-spin"
+          name="i-heroicons-arrow-path-20-solid"
+        />
+        <div v-text="$t('$loading')" />
+      </div>
+    </div>
+
     <UModal
-      :model-value="!userStore.address"
+      :model-value="isPrivyReady && !isPrivyAuthenticated"
       :ui="{
         padding: 'p-0',
         rounded: 'rounded-none lg:rounded-lg',
@@ -41,7 +68,7 @@
     </USlideover>
 
     <NuxtPage
-      :class="['overflow-y-auto', { 'opacity-0': !userStore.address }]"
+      :class="['overflow-y-auto', { 'opacity-0': !isPrivyAuthenticated }]"
     />
 
     <NuxtLoadingIndicator />
@@ -51,8 +78,21 @@
 </template>
 
 <script setup lang="ts">
+import { setVeauryOptions } from "veaury";
+import { createRoot } from "react-dom/client";
+
+setVeauryOptions({
+  react: {
+    createRoot,
+  },
+});
+
+const APP_NAME = "book3.app";
+
 const userStore = useUserStore();
+const { isPrivyAuthenticated, isPrivyReady } = storeToRefs(userStore);
 const uiStore = useUIStore();
+const { t: $t } = useI18n();
 
 const isMobileMenuOpen = computed({
   get: () => uiStore.isMobileMenuOpen,
@@ -107,15 +147,7 @@ useHead({
 });
 
 useSeoMeta({
-  title: "book3.app",
-  ogTitle: "book3.app",
-});
-
-await callOnce(async () => {
-  try {
-    await userStore.fetchSettings();
-  } catch {
-    // Ignore
-  }
+  title: APP_NAME,
+  ogTitle: APP_NAME,
 });
 </script>

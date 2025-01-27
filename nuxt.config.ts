@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import veauryVitePlugins from "veaury/vite/index.js";
+
 export default defineNuxtConfig({
   app: {
     rootAttrs: {
@@ -7,10 +9,8 @@ export default defineNuxtConfig({
   },
   compatibilityDate: "2024-04-03",
   runtimeConfig: {
-    sessionSecret:
-      process.env.SESSION_SECRET || "00000000-0000-0000-0000-000000000000",
     public: {
-      sessionName: "book3_app_session",
+      privyAppId: "cm38yfagh00iqaegqad5wbbpo",
     },
   },
   devtools: { enabled: true },
@@ -18,7 +18,6 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "@nuxt/eslint",
     "@pinia/nuxt",
-    "@wagmi/vue/nuxt",
     "@vueuse/nuxt",
     "@nuxtjs/i18n",
   ],
@@ -27,6 +26,17 @@ export default defineNuxtConfig({
     locales: [
       { code: "en", name: "English" },
       { code: "zh-Hant", name: "繁體中文" },
+    ],
+  },
+  build: {
+    transpile: ["veaury"],
+  },
+  vite: {
+    plugins: [
+      veauryVitePlugins({
+        type: "vue",
+        isNuxt: true,
+      }),
     ],
   },
 });

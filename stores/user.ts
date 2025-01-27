@@ -1,46 +1,57 @@
-import type { SignableMessage } from "viem";
+export const useUserStore = defineStore("userStore", () => {
+  const isPrivyReady = ref(false);
+  const isPrivyAuthenticated = ref(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const privyUser = ref<any>();
+  const privyLogin = ref<() => Promise<void>>();
+  const privyLogout = ref<() => Promise<void>>();
 
-export const useUserStore = defineStore("userStore", {
-  state: () => ({
-    address: "",
-  }),
-  actions: {
-    async fetchSettings() {
-      // NOTE: Pass the headers in SSR for authentication
-      const headers = useRequestHeaders();
-      const data = await $fetch<{ address: string }>("/api/users/settings", {
-        headers,
-      }).catch((error) => {
-        if (typeof error.data === "string") throw new Error(error.data);
-        throw error;
-      });
+  const address = computed(() => privyUser.value?.wallet.address || "");
 
-      this.address = data?.address;
-    },
-    async login({
-      address,
-      message,
-      signature,
-    }: {
-      address: `0x${string}`;
-      message: SignableMessage;
-      signature: `0x${string}`;
-    }) {
-      const data = await $fetch<{ address: string }>("/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ address, message, signature }),
-      }).catch((error) => {
-        if (typeof error.data === "string") throw new Error(error.data);
-        throw error;
-      });
-      this.address = data.address;
-    },
-    async logout() {
-      this.address = "";
-      await $fetch("/api/users/logout", { method: "POST" });
-    },
-  },
+  function setIsPrivyReady(value: false) {
+    isPrivyReady.value = value;
+  }
+
+  function setIsPrivyAuthenticated(value: boolean) {
+    isPrivyAuthenticated.value = value;
+  }
+
+  function setPrivyLogin(value: () => Promise<void>) {
+    privyLogin.value = value;
+  }
+
+  function setPrivyLogout(value: () => Promise<void>) {
+    privyLogout.value = value;
+  }
+
+  function setPrivyUser(value: unknown) {
+    privyUser.value = value;
+  }
+
+  function login() {
+    privyLogin.value?.();
+  }
+
+  async function logout() {
+    await privyLogout.value?.();
+  }
+
+  return {
+    isPrivyReady,
+    isPrivyAuthenticated,
+    privyUser,
+    privyLogin,
+    privyLogout,
+
+    address,
+
+    setIsPrivyReady,
+    setIsPrivyAuthenticated,
+    setPrivyUser,
+    setPrivyLogin,
+    setPrivyLogout,
+
+    login,
+    logout,
+  };
 });
