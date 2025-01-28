@@ -2,9 +2,13 @@ import { WagmiPlugin } from "@wagmi/vue";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import { defineNuxtPlugin } from "nuxt/app";
 
-import { config } from "../wagmi";
+import { createAppKitWagmiAdapter } from "../appkit";
 
 // NOTE: Possibly will move to @wagmi/vue/nuxt nitro plugin
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(WagmiPlugin, { config }).use(VueQueryPlugin, {});
+  const { appKitProjectId } = useRuntimeConfig().public;
+  const wagmiAdapter = createAppKitWagmiAdapter(appKitProjectId);
+  nuxtApp.vueApp
+    .use(WagmiPlugin, { config: wagmiAdapter.wagmiConfig })
+    .use(VueQueryPlugin, {});
 });

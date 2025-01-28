@@ -1,17 +1,36 @@
 <template>
   <div class="fixed inset-0 flex">
-    <UModal
-      :model-value="!userStore.address"
-      :ui="{
-        padding: 'p-0',
-        rounded: 'rounded-none lg:rounded-lg',
-        overlay: { background: 'bg-gray-200 dark:bg-gray-800' },
-      }"
-      :transition="false"
-      prevent-close
-    >
-      <AuthPage />
-    </UModal>
+    <ClientOnly>
+      <div
+        v-if="accountData.status === 'connecting'"
+        class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6 text-center bg-white dark:bg-gray-900"
+      >
+        <AppLogo class="h-20 mx-auto" />
+        <div class="text-2xl font-bold" v-text="APP_NAME" />
+        <div
+          class="flex flex-col items-center justify-center text-sm text-gray-400"
+        >
+          <UIcon
+            class="w-10 h-10 mx-auto animate-spin"
+            name="i-heroicons-arrow-path-20-solid"
+          />
+          <div v-text="$t('$loading')" />
+        </div>
+      </div>
+
+      <UModal
+        :model-value="accountData.status === 'disconnected'"
+        :ui="{
+          padding: 'p-0',
+          rounded: 'rounded-none lg:rounded-lg',
+          overlay: { background: 'bg-gray-200 dark:bg-gray-800' },
+        }"
+        :transition="false"
+        prevent-close
+      >
+        <AuthPage />
+      </UModal>
+    </ClientOnly>
 
     <AppMenu
       :class="[
@@ -41,7 +60,10 @@
     </USlideover>
 
     <NuxtPage
-      :class="['overflow-y-auto', { 'opacity-0': !userStore.address }]"
+      :class="[
+        'overflow-y-auto',
+        { 'opacity-0': accountData.status !== 'connected' },
+      ]"
     />
 
     <NuxtLoadingIndicator />
@@ -51,7 +73,12 @@
 </template>
 
 <script setup lang="ts">
-const userStore = useUserStore();
+import { createAppKit, useAppKitAccount } from "@reown/appkit/vue";
+import { createAppKitWagmiAdapter, networks } from "./appkit";
+
+const APP_NAME = "book3.app";
+
+const accountData = useAppKitAccount();
 const uiStore = useUIStore();
 
 const isMobileMenuOpen = computed({
@@ -60,6 +87,29 @@ const isMobileMenuOpen = computed({
 });
 
 const route = useRoute();
+const { appKitProjectId } = useRuntimeConfig().public;
+
+const metadata = {
+  name: APP_NAME,
+  description: APP_NAME,
+  url: "https://book3.app", // origin must match your domain & subdomain
+  icons: ["https://book3.app/apple-touch-icon.png"],
+};
+
+const wagmiAdapter = createAppKitWagmiAdapter(appKitProjectId);
+
+// Initialize AppKit
+createAppKit({
+  adapters: [wagmiAdapter],
+  networks,
+  projectId: appKitProjectId,
+  metadata,
+  features: {
+    email: true,
+    socials: ["google"],
+    emailShowWallets: false,
+  },
+});
 
 // NOTE: Close mobile menu on route change
 watch(
@@ -107,15 +157,7 @@ useHead({
 });
 
 useSeoMeta({
-  title: "book3.app",
-  ogTitle: "book3.app",
-});
-
-await callOnce(async () => {
-  try {
-    await userStore.fetchSettings();
-  } catch {
-    // Ignore
-  }
+  title: APP_NAME,
+  ogTitle: APP_NAME,
 });
 </script>

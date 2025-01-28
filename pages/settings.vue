@@ -6,7 +6,7 @@
       <UFormGroup :label="$t('settings_page_account_label')">
         <UInput
           class="font-mono"
-          :model-value="userStore.address"
+          :model-value="accountInfo.address || 'N/A'"
           icon="i-heroicons-key"
           size="lg"
           :disabled="true"
@@ -17,12 +17,22 @@
               icon="i-heroicons-clipboard-document"
               variant="ghost"
               size="xs"
-              :disabled="!userStore.address"
+              :disabled="!accountInfo.address"
               @click="copyAddress"
             />
           </template>
         </UInput>
       </UFormGroup>
+
+      <UButton
+        :label="$t('settings_page_appkit_button_label')"
+        variant="outline"
+        size="xl"
+        block
+        :disabled="isAppKitModalOpen"
+        :loading="isAppKitModalOpen"
+        @click="handleAppKitButtonClick"
+      />
 
       <UFormGroup :label="$t('settings_page_language_label')">
         <USelect v-model="locale" :options="localeOptions" />
@@ -40,14 +50,19 @@
 </template>
 
 <script setup lang="ts">
-import { useDisconnect } from "@wagmi/vue";
+import {
+  useAppKit,
+  useAppKitAccount,
+  useAppKitState,
+  useDisconnect,
+} from "@reown/appkit/vue";
 
-import { useUserStore } from "../stores/user";
+const { open: openAppKit } = useAppKit();
+const { open: isAppKitModalOpen } = useAppKitState();
+const accountInfo = useAppKitAccount();
 
 const { disconnect } = useDisconnect();
-const userStore = useUserStore();
 
-const { $db } = useNuxtApp();
 const router = useRouter();
 
 const toast = useToast();
@@ -67,8 +82,13 @@ const locale = computed({
   },
 });
 
+function handleAppKitButtonClick() {
+  if (isAppKitModalOpen) return;
+  openAppKit({ view: "Account" });
+}
+
 function copyAddress() {
-  navigator.clipboard.writeText(userStore.address);
+  navigator.clipboard.writeText(accountInfo.value.address || "");
   toast.add({
     id: "copy-address",
     title: "Copied address to clipboard",
@@ -76,23 +96,13 @@ function copyAddress() {
 }
 
 async function signOut() {
+  if (accountInfo.value.status !== "connected") return;
+
   const isConfirmed = window.confirm(
     i18n.t("settings_page_sign_out_confirm_message"),
   );
   if (!isConfirmed) return;
 
-  try {
-    await userStore.logout();
-
-    Promise.all([
-      $db.books.clear(),
-      $db.bookCovers.clear(),
-      $db.bookFiles.clear(),
-    ]);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    disconnect();
-  }
+  disconnect();
 }
 </script>
